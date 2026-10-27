@@ -604,7 +604,7 @@ function newGame(){
     products:{egg:0, milk:0, fish:0},
     soil:0, cd:0,
     pets:[], scene:'hut', mom:62,
-    rumors:[],
+    rumors:[], freeUsed:{},
     flags:{ tree:0, well:0, stove:0, jade:false, eye:false, cat:false, konami:false, momDead:false },
     logs:[], over:false, lastTax:0, lastWinter:0
   };
@@ -619,12 +619,13 @@ function load(){
     if(!d || !d.plots || d.v!==6) return false;
     G = d;
     var def = {turn:0,ap:AP_MAX,money:30,stone:0,stage:0,total:0,harvest:0,store:{},
-      soil:0,cd:0,pets:[],scene:'hut',mom:62,rumors:[],logs:[],over:false,lastTax:0,lastWinter:0};
+      soil:0,cd:0,pets:[],scene:'hut',mom:62,rumors:[],freeUsed:{},logs:[],over:false,lastTax:0,lastWinter:0};
     for(var k in def){ if(G[k]===undefined) G[k]=def[k]; }
     if(!G.products){
       G.products = { egg: G.eggs||0, milk:0, fish:0 };   // 旧档里只记过蛋，先照蛋迁移
     }
     for(var pk in PRODUCTS){ if(typeof G.products[pk] !== 'number') G.products[pk] = 0; }
+    if(!G.freeUsed) G.freeUsed = {};
     delete G.eggs;
     for(var pi=0;pi<G.pets.length;pi++){
       var pet=G.pets[pi];
@@ -668,6 +669,12 @@ function productSummary(){
   return parts.length ? parts.join(' · ') : '尚无出产';
 }
 function openCost(){ return Math.max(3, 4-(hasTrait('t_plots')?1:0)); }
+function freeOnce(key, msg){
+  if(!G.freeUsed) G.freeUsed = {};
+  if(G.freeUsed[key]){ toast(msg || '这一旬已经做过了，等过旬罢。'); return false; }
+  G.freeUsed[key] = 1;
+  return true;
+}
 function earthCoef(e){ return 0.5 + 0.5*e/100; }
 function realYield(crop, e){ var n = Math.round(CROPS[crop].yield*earthCoef(e)); return n<1?1:n; }
 function addStore(crop,n){ G.store[crop]=(G.store[crop]||0)+n; G.total+=n; G.harvest+=n; }
@@ -735,7 +742,7 @@ function passXun(){
     if(pl.state==='种' && pl.crop && pl.grow < CROPS[pl.crop].grow) pl.grow++;
   }
   if(G.cd>0) G.cd--;
-  G.turn++; G.ap = apMax(); G.life -= DAYS_PER_XUN;
+  G.turn++; G.ap = apMax(); G.freeUsed = {}; G.life -= DAYS_PER_XUN;
 
   tickPets();
   if(G.life<=0){ ending('阳寿在这一旬走到了尽头。'); return; }
@@ -972,6 +979,7 @@ function doRest(idx){
 /* ======================= 茅屋（免费互动） ======================= */
 function talkMom(){
   if(G.flags.momDead){ toast('屋里没有人应你。'); return; }
+  if(!freeOnce('mom','这一旬已经陪母亲坐过了。')) return;
   G.mom = Math.min(100, G.mom + 3);
   var lines = [
     '母亲靠在墙上纳鞋底，针脚歪歪扭扭。她说，你别总看着我，你也该吃了。',
@@ -985,6 +993,7 @@ function talkMom(){
 function brewMedicine(){
   if(G.flags.momDead){ toast('药已经用不上了。'); return; }
   if((G.store.mi||0) < 2){ toast('没有糙米可熬。'); return; }
+  if(!freeOnce('brew','这一旬的灶已经歇了，等过旬再熬。')) return;
   G.store.mi -= 2;
   G.mom = Math.min(100, G.mom + 12);
   if(G.store.mi===0) delete G.store.mi;
@@ -994,6 +1003,7 @@ function brewMedicine(){
 function puzzleStove(){
   if(G.flags.cat){ toast('灶边只剩一团草灰。'); return; }
   if(seasonIdx() !== 3){ toast('灶是凉的。冬天再来看看罢。'); return; }
+  if(!freeOnce('stove','这一旬已经拨过灶灰了。')) return;
   G.flags.stove++;
   if(G.flags.stove >= 5){
     G.flags.cat = true;
@@ -1015,7 +1025,7 @@ function openBuyPet(){
     if(k==='cat') continue;
     html += '<button class="row ghost" onclick="buyPet(\''+k+'\')"><span>'+t.emoji+' '+t.name+'　'+t.cost+' 文</span>'+
             '<em>每 '+t.every+' 旬得 '+PRODUCTS[t.product].name+' '+t.yield+' '+PRODUCTS[t.product].unit+
-            ' · 每'+PRODUCTS[t.product].unit+' '+productPrice(t.product)+' 文</em></button>';
+            ' · 每'+PRODUCTS[t.product].unit+' '+productPrice(t.product)+' 文 · 买入耗 1 力</em></button>';
   }
   html += '<button class="ghost" onclick="closeModal()">罢了</button>';
   showModal(html);
@@ -1024,6 +1034,7 @@ function buyPet(type){
   var t = PET_TYPES[type];
   if(G.pets.length >= PET_MAX){ toast('埘里挤不下了。'); return; }
   if(G.money < t.cost){ toast('铜钱不够。'); return; }
+  if(!spendAp(1)) return;
   G.money -= t.cost;
   G.pets.push({type:type, prodT:0, x:0, y:0});
   log(t.name+'进了院，先是在门口站了半天，才敢往里走。','');
@@ -1048,10 +1059,11 @@ function tickPets(){
 }
 function feedPet(i){
   if((G.store.qing||0) < 1 && (G.store.mi||0) < 1){ toast('没有能喂的。'); return; }
+  var p = G.pets[i], tp = PET_TYPES[p.type];
+  if(!freeOnce('feed'+i, tp.name+'这一旬已经喂过了。')) return;
   if((G.store.qing||0) >= 1) G.store.qing--; else G.store.mi--;
   if(G.store.qing===0) delete G.store.qing;
   if(G.store.mi===0) delete G.store.mi;
-  var p = G.pets[i], tp = PET_TYPES[p.type];
   p.prodT = Math.min(tp.every-1, p.prodT + 4);
   log(tp.name+'吃得很快，抬头看你一眼，又低下头去。','');
   save(); render();
@@ -1076,6 +1088,7 @@ function rumorBoxHtml(){
   return h + '</div>';
 }
 function askNews(){
+  if(!freeOnce('news','这一旬的闲话已经听过了，等过旬再来。')) return;
   var pool = [
     '晒谷场上有人说，县里采药堂又抬高了收草的价，说是南边出了事。',
     '哑伯蹲在门槛上比了个手势——三根手指，往下压。你猜是"还要跌"。',
@@ -1097,6 +1110,7 @@ function askNews(){
 }
 function puzzleTree(){
   if(G.flags.jade){ toast('老槐树什么都不肯再给了。'); return; }
+  if(!freeOnce('tree','这一旬已经在树下坐过了。')) return;
   G.flags.tree++;
   if(G.flags.tree >= 7){
     G.flags.jade = true;
@@ -1113,12 +1127,14 @@ function puzzleTree(){
   }
 }
 function puzzleWell(){
+  if(G.flags.eye){ toast('井水很静。'); return; }
+  if(!freeOnce('well','这一旬已经在井边守过了。')) return;
   G.flags.well++;
   if(G.flags.well < 10){
     if(G.flags.well === 5) log('井底的水声停了半拍。','z');
+    save(); render();
     return;
   }
-  if(G.flags.eye){ toast('井水很静。'); return; }
   G.flags.eye = true;
   boltFlash(); flash();
   G.life += 10*DAYS_PER_YEAR;
@@ -1164,6 +1180,7 @@ function buyAsh(idx){
 }
 function refineStone(){
   if((G.store.ling||0) < LING_PER_STONE){ toast('回灵草不够，要四株。'); return; }
+  if(!spendAp(1)) return;
   G.store.ling -= LING_PER_STONE;
   if(G.store.ling<=0) delete G.store.ling;
   G.stone++;
@@ -1471,8 +1488,8 @@ function renderScene(){
           '<div class="fbar"><i style="width:'+Math.min(100,50+G.total*0.6)+'%"></i></div><em>总蹲在草边，说它们在说话</em></div>'+
       '</div>'+
       '<div class="sc-acts">'+
-        '<button class="free" '+(G.flags.momDead?'disabled':'')+' onclick="talkMom()">陪母亲坐一会儿</button>'+
-        '<button class="free" '+(G.flags.momDead?'disabled':'')+' onclick="brewMedicine()">熬一锅药粥　耗 2 份糙米</button>'+
+        '<button class="free" '+(G.flags.momDead?'disabled':'')+' onclick="talkMom()">陪母亲坐一会儿　每旬一次</button>'+
+        '<button class="free" '+(G.flags.momDead?'disabled':'')+' onclick="brewMedicine()">熬一锅药粥　耗 2 份糙米 · 每旬一次</button>'+
         '<button class="quiet" onclick="puzzleStove()">看看灶膛</button>'+
       '</div>';
   }
@@ -1534,7 +1551,7 @@ function renderScene(){
                 '<em>'+verb+' '+pt.prodT+' / '+tp.every+' 旬 · 每'+pd.unit+' '+productPrice(tp.product)+' 文</em>'+
                 '<div style="margin-top:6px"><button style="width:100%;font-family:inherit;font-size:11.5px;'+
                 'padding:4px;border-radius:2px;border:1px solid #c2ccb0;background:#eef1e6;color:#4c5a3c;cursor:pointer" '+
-                'onclick="feedPet('+j+')">添食　耗 1 份</button></div></div>';
+                'onclick="feedPet('+j+')">添食　耗 1 份 · 每旬一次</button></div></div>';
       }
     }
     body = '<div class="vn"><p>'+
@@ -1544,7 +1561,7 @@ function renderScene(){
        '天冷，它们挤成一团。你多铺了一层干草，又添了半瓢水。'][si]+
       '</p></div>'+
       '<div class="famrow">'+list+'</div>'+
-      '<div class="sc-acts"><button class="hot" '+(G.pets.length>=PET_MAX?'disabled':'')+' onclick="openBuyPet()">买畜禽　24 文起</button>'+
+      '<div class="sc-acts"><button class="hot" '+(G.pets.length>=PET_MAX?'disabled':'')+' onclick="openBuyPet()">买畜禽　24 文起 · 1 力</button>'+
       '<button class="quiet" onclick="toast(\'现有 '+productSummary()+'\')">产物 '+productTotal()+'</button></div>';
     sub = '牲畜 '+G.pets.length+' / '+PET_MAX+' · '+productSummary();
   }
@@ -1571,8 +1588,8 @@ function renderScene(){
         '<div class="fcard">'+portrait('neighbor',ageNow(16))+'<div class="fn">阿禾　'+ageNow(16)+'岁</div>'+
           '<div class="fbar"><i style="width:70%"></i></div><em>隔壁家的女儿，嘴碎，心热</em></div>'+
       '</div>'+
-      '<div class="tree" onclick="puzzleTree()"><div class="glyph">'+icon('tree')+'</div><div class="hint">村口的老槐树</div></div>'+
-      '<div class="sc-acts"><button class="free" onclick="askNews()">听人说闲话　免费</button></div>'+
+      '<div class="tree" onclick="puzzleTree()"><div class="glyph">'+icon('tree')+'</div><div class="hint">村口的老槐树 · 每旬可来一次</div></div>'+
+      '<div class="sc-acts"><button class="free" onclick="askNews()">听人说闲话　免费 · 每旬一次</button></div>'+
       rumorBoxHtml();
   }
 
@@ -1612,7 +1629,7 @@ function renderScene(){
           '<em>回灵草 '+ling+' / '+LING_PER_STONE+' 株，可换一枚灵石</em>'+
           '<div style="margin-top:6px"><button style="width:100%;font-family:inherit;font-size:11.5px;padding:5px;'+
           'border-radius:2px;border:1px solid #7d6bc4;background:#7d6bc4;color:#fff;cursor:pointer" '+
-          (ling>=LING_PER_STONE?'':'disabled style="opacity:.35"')+' onclick="refineStone()">换灵石</button></div></div>'+
+          (ling>=LING_PER_STONE && G.ap>=1 ?'':'disabled style="opacity:.35"')+' onclick="refineStone()">换灵石 · 1 力</button></div></div>'+
       '</div>'+
       '<div class="sc-acts" style="flex-direction:column;gap:4px">'+rows+'</div>';
     sub = (parts.length ? parts.join('、') : '背篓空空')+' · 灵石 '+G.stone+' 枚';
