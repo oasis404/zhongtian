@@ -12,6 +12,7 @@ body{
   color:#33291f;background:#e9e2d4;line-height:1.72;font-size:14px;min-height:100%;
   transition:background-color 1s ease;
 }
+button:disabled{opacity:.38!important;filter:grayscale(.55);cursor:not-allowed!important}
 .app{max-width:1120px;margin:0 auto;padding:10px;display:flex;flex-direction:column;gap:8px;min-height:100vh;position:relative;z-index:2}
 
 #seasonFx{position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:40}
@@ -22,6 +23,15 @@ body{
   display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between}
 .top h1{font-size:15px;font-weight:400;letter-spacing:5px;color:#6f4526}
 .top h1 small{font-size:10px;letter-spacing:2px;color:#a08e78;margin-left:8px}
+.saveBtn{font-family:inherit;font-size:11px;letter-spacing:1px;padding:4px 10px;border-radius:2px;cursor:pointer;
+  border:1px solid #c9bba5;background:#f2ebdd;color:#6f5c48}
+.saveBtn:hover{background:#e9dfc9}
+.hintBar{display:flex;align-items:center;gap:7px;background:#f5efe3;border:1px solid #e0d5c0;border-radius:3px;
+  padding:5px 10px;font-size:11.5px;color:#6f5c48;flex:0 0 auto;min-width:0}
+.hintBar .tag{color:#8a6420;letter-spacing:2px;white-space:nowrap}
+.hintBar .hintText{flex:1;min-width:0;line-height:1.5}
+.hintBar button{flex:0 0 auto;font-family:inherit;font-size:10.5px;padding:3px 9px;border-radius:2px;cursor:pointer;
+  border:1px solid #849a72;background:#eef1e6;color:#4c5a3c;white-space:nowrap}
 .chips{display:flex;flex-wrap:wrap;gap:6px}
 .chip{background:#f2ebdd;border:1px solid #d8cbb4;border-radius:2px;padding:3px 10px;font-size:11.5px;color:#6f5c48;white-space:nowrap}
 .chip b{color:#6f4526;font-weight:400;font-size:13px;font-variant-numeric:tabular-nums}
@@ -49,6 +59,7 @@ body{
 .panel h3 em{font-style:normal;font-size:10.5px;color:#a08e78;letter-spacing:0}
 
 .scene{flex:1;min-height:0;position:relative;display:flex;flex-direction:column;overflow-y:auto;overflow-x:hidden}
+.scene>*{flex-shrink:0}
 
 /* 视觉小说叙述 */
 .vn{font-size:13.5px;color:#4a3c2e;line-height:2.05;letter-spacing:.3px;
@@ -109,6 +120,10 @@ body{
 .sc-acts button.hot:hover{background:#748a62}
 .sc-acts button.quiet{background:#f5f0e4;border-color:#e0d5c0;color:#9c8a70;font-size:11.5px}
 .mobileOnly{display:none!important}
+.eggSpot{display:block;margin:11px auto 2px;padding:4px 8px;border:0;border-bottom:1px dashed #d2c2a9;
+  background:transparent;color:#a08e78;font-family:inherit;font-size:10.5px;letter-spacing:1px;cursor:pointer}
+.eggSpot:hover{color:#7a4f30}
+.eggSpot:disabled{opacity:.45;cursor:default}
 
 /* 老槐树 */
 .tree{width:100%;height:140px;display:grid;place-items:center;cursor:pointer;user-select:none;position:relative}
@@ -280,6 +295,28 @@ body{
 .mbox button.ghost{background:#f2ebdd;border-color:#d8cbb4;color:#5d4e3c}
 .mbox button.row{display:flex;justify-content:space-between;align-items:center;text-align:left}
 .mbox button.row em{font-style:normal;font-size:11px;opacity:.8}
+.saveIntro{font-size:11.5px;color:#8a7660;line-height:1.75;margin-bottom:9px;padding-bottom:7px;border-bottom:1px dashed #e0d5c0}
+.saveWarn{font-size:10.5px;color:#8f3a2c;background:#f6e8e5;border:1px solid #e4c9c3;border-radius:2px;
+  padding:6px 8px;line-height:1.65;margin-bottom:8px}
+.saveRow{display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px dotted #e6dccb}
+.saveRow:last-child{border-bottom:0}
+.saveRow .sinfo{flex:1;min-width:0}
+.saveRow .sinfo b{display:block;font-size:12px;font-weight:400;color:#6f4526;letter-spacing:1px}
+.saveRow .sinfo em{display:block;font-style:normal;font-size:10.5px;color:#a08e78;line-height:1.55;overflow-wrap:anywhere}
+.saveActions{display:flex;gap:4px;flex:0 0 auto}
+.mbox .saveActions button{width:auto;min-height:32px;margin:0;padding:5px 8px;font-size:10.5px;border-radius:2px}
+.mbox .saveActions button.danger{background:#f6e8e5;border-color:#d9b5ae;color:#8f3a2c}
+.tradeHelp{margin-top:8px;padding:8px 10px;background:#f5efe3;border:1px dashed #ddd0bb;border-radius:3px;
+  font-size:11px;color:#6f5c48;line-height:1.8}
+.tradeHelp b{font-weight:400;color:#7a4f30;letter-spacing:1px}
+.tradeHelp em{font-style:normal;display:block;color:#8a7660;margin-top:2px}
+.stageCurve{display:flex;align-items:center;justify-content:space-between;gap:3px;margin-top:8px;
+  padding:7px 9px;background:#f5efe3;border:1px solid #e0d5c0;border-radius:3px;font-size:10.5px;color:#ad9c85}
+.stageCurve span{padding:2px 5px;border-radius:2px;white-space:nowrap}
+.stageCurve span.on{color:#3f5735;background:#eef1e6}
+.stageCurve span.cur{color:#f7f1e5;background:#849a72}
+.stageCurve i{font-style:normal;color:#c0af94}
+.curveNote{font-size:10px;color:#a08e78;margin-top:4px;line-height:1.6}
 .namebox{margin-top:13px;padding:11px 12px;background:#f5efe3;border:1px dashed #cdbfa9;border-radius:3px}
 .namebox p{font-size:12px;color:#6f5c48;margin-bottom:8px;line-height:1.75}
 .namebox .nameTitle{text-align:center;font-size:12.5px;letter-spacing:5px;color:#6f4526;margin-bottom:6px}
@@ -306,10 +343,13 @@ body{
   .app{width:100%;height:100vh;height:100dvh;min-height:0;overflow:hidden;gap:5px;z-index:auto;
     padding:calc(6px + env(safe-area-inset-top)) 8px calc(120px + env(safe-area-inset-bottom))}
   .top{padding:7px 9px;gap:4px;flex:0 0 auto}
-  .top h1{width:100%;font-size:14px;letter-spacing:3px;line-height:1.35}
+  .top h1{width:auto;flex:1;font-size:14px;letter-spacing:3px;line-height:1.35}
   .top h1 small{font-size:9.5px;letter-spacing:1px;margin-left:4px}
-  .chips{width:100%;gap:4px;flex-wrap:nowrap;overflow-x:auto;overflow-y:hidden;
+  .saveBtn{padding:5px 8px;font-size:10px;min-height:30px}
+  .chips{width:100%;order:3;gap:4px;flex-wrap:nowrap;overflow-x:auto;overflow-y:hidden;
     -webkit-overflow-scrolling:touch;scrollbar-width:none;padding-bottom:1px}
+  .hintBar{padding:4px 7px;gap:4px;font-size:10.5px}
+  .hintBar button{padding:2px 6px;font-size:10px;min-height:28px}
   .chips::-webkit-scrollbar{display:none}
   .chip{flex:0 0 auto;padding:3px 7px;font-size:10.5px}
   .chip b{font-size:12px}
@@ -347,9 +387,14 @@ body{
   .fcard{padding:8px}
   .fcard button{min-height:42px}
   .sc-acts{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+  .sc-acts button:only-child{grid-column:1 / -1}
   .sc-acts.mobileOnly{display:grid!important}
+  .eggSpot{min-height:34px;margin-top:9px;font-size:10px}
   .sc-acts button{min-height:44px;padding:8px 6px;font-size:12px}
   .sc-acts button.quiet{font-size:11px}
+  .rumorBox{margin-top:7px}
+  .rumorBox p{font-size:11.5px;line-height:1.7;padding:6px 9px}
+  .rumorBox .empty{padding:9px 9px;font-size:11px}
   .tree{height:116px}
   .tree .glyph .inkIcon{width:74px;height:74px}
   .stats{grid-template-columns:repeat(2,minmax(0,1fr));gap:5px}
@@ -402,7 +447,10 @@ body{
   <header class="top">
     <h1>紫府仙缘<small>竹岐县 · 柳溪村</small></h1>
     <div class="chips" id="chips"></div>
+    <button class="saveBtn" onclick="openSaves()">存 档</button>
   </header>
+
+  <div class="hintBar" id="hintBar"></div>
 
   <div class="main">
     <section class="panel">
@@ -467,7 +515,7 @@ body{
 </script>
 <script>
 /* ==========================================================
-   紫府仙缘   v0.7
+   紫府仙缘   v0.8
    世界观：武国平州竹岐县，城外柳溪村
    资源：铜钱（凡俗）· 灵石（修真）· 回灵草（资粮）
    ========================================================== */
@@ -492,13 +540,13 @@ var PRODUCTS = {
   fish: {name:'鲜鱼', short:'鱼', unit:'尾', price:4}
 };
 /* 家畜使用系统标准全身图标 */
-var ANIMAL_ICONS = { chicken:'🐔', duck:'🦆', goat:'🐐', cat:'🐈' };
+var ANIMAL_ICONS = { chicken:'🐓', duck:'🦆', goat:'🐐', cat:'🐈' };
 function petArt(type){
   return '<span class="petArt emojiPet">'+(ANIMAL_ICONS[type]||'🐈')+'</span>';
 }
 
 var PET_TYPES = {
-  chicken: {name:'母鸡', cost:24, every:12, product:'egg',  yield:1},
+  chicken: {name:'鸡', cost:24, every:12, product:'egg',  yield:1},
   duck:    {name:'麻鸭', cost:30, every:10, product:'egg',  yield:1},
   goat:    {name:'山羊', cost:40, every:16, product:'milk', yield:1},
   cat:     {name:'狸猫', cost:0,  every:6,  product:'fish', yield:2}
@@ -645,6 +693,37 @@ var G = null;
 var SCENE = 'hut';
 var SAVE_KEY = 'zifu_tianji_v6';
 var PREV = {};
+var MEM_STORE = {};
+var STORAGE_FALLBACK = false;
+(function hydrateMemoryStore(){
+  try{
+    if(window.name && window.name.indexOf('ZFSAVE:')===0) MEM_STORE = JSON.parse(window.name.slice(7)) || {};
+  }catch(e){ MEM_STORE = {}; }
+})();
+function storeGet(k){
+  if(!STORAGE_FALLBACK){
+    try{ return localStorage.getItem(k); }
+    catch(e){ STORAGE_FALLBACK = true; }
+  }
+  return Object.prototype.hasOwnProperty.call(MEM_STORE,k) ? MEM_STORE[k] : null;
+}
+function storeSet(k,v){
+  MEM_STORE[k] = v;
+  if(!STORAGE_FALLBACK){
+    try{ localStorage.setItem(k,v); return 'disk'; }
+    catch(e){ STORAGE_FALLBACK = true; }
+  }
+  try{ window.name = 'ZFSAVE:'+JSON.stringify(MEM_STORE); return 'tab'; }
+  catch(e){ return false; }
+}
+function storeRemove(k){
+  delete MEM_STORE[k];
+  if(!STORAGE_FALLBACK){
+    try{ localStorage.removeItem(k); }
+    catch(e){ STORAGE_FALLBACK = true; }
+  }
+  try{ if(STORAGE_FALLBACK) window.name = 'ZFSAVE:'+JSON.stringify(MEM_STORE); }catch(e){}
+}
 
 function mk(state){ return {state:state, crop:null, grow:0, earth: state==='荒'?0:100}; }
 
@@ -666,10 +745,10 @@ function newGame(){
   };
 }
 
-function save(){ try{ localStorage.setItem(SAVE_KEY, JSON.stringify(G)); }catch(e){} }
+function save(){ try{ storeSet(SAVE_KEY, JSON.stringify(G)); }catch(e){} }
 function load(){
   try{
-    var raw = localStorage.getItem(SAVE_KEY);
+    var raw = storeGet(SAVE_KEY);
     if(!raw) return false;
     var d = JSON.parse(raw);
     if(!d || !d.plots || d.v!==6) return false;
@@ -694,7 +773,74 @@ function load(){
     return true;
   }catch(e){ return false; }
 }
-function clearSave(){ try{ localStorage.removeItem(SAVE_KEY); }catch(e){} }
+function clearSave(){ storeRemove(SAVE_KEY); }
+
+/* ======================= 手动存档 ======================= */
+var SLOT_KEY = 'zifu_slot_';
+function readSlot(n){
+  try{
+    var raw = storeGet(SLOT_KEY+n);
+    return raw ? JSON.parse(raw) : null;
+  }catch(e){ return null; }
+}
+function openSaves(){
+  var h = '<h2>存 档</h2>'+
+    '<div class="saveIntro">本局每旬自动保存。也可以把此刻写入手动存档，日后从这里回来。</div>';
+  if(STORAGE_FALLBACK) h += '<div class="saveWarn">此页面禁止长期存储，存档只留在当前标签页；要长久保存，请从 GitHub Pages 正式网址打开。</div>';
+  for(var i=1;i<=3;i++){
+    var s = readSlot(i);
+    h += '<div class="saveRow"><div class="sinfo"><b>存档 '+i+(s?'　'+s.label:'　空白')+'</b>'+
+      '<em>'+(s?'写入于 '+s.real:'尚未写入')+'</em></div>'+
+      '<div class="saveActions"><button onclick="saveSlot('+i+')">存入</button>'+
+      (s?'<button class="ghost" onclick="loadSlot('+i+')">读取</button>'+
+         '<button class="ghost danger" onclick="clearSlot('+i+')">清除</button>':'')+
+      '</div></div>';
+  }
+  h += '<button class="ghost" onclick="closeModal()">合 上</button>';
+  showModal(h);
+}
+function saveSlot(n){
+  var raw;
+  try{
+    save();
+    var payload = {
+      v:1, real:new Date().toLocaleString('zh-CN',{hour12:false}),
+      label:heroFull()+' · '+dateStr()+' · '+stageName(),
+      data:G
+    };
+    raw = JSON.stringify(payload);
+  }catch(e){
+    console.warn('save slot serialize failed', e);
+    toast('存档内容生成失败，请重试。');
+    return;
+  }
+  var where = storeSet(SLOT_KEY+n, raw);
+  if(!where){
+    toast('这份存档无法写入。请确认浏览器允许本地存储。');
+    return;
+  }
+  toast(where==='tab' ? ('已写入存档 '+n+'（仅本标签页）') : ('已写入存档 '+n));
+  openSaves();
+}
+function loadSlot(n){
+  var s = readSlot(n);
+  if(!s || !s.data || s.data.v!==6 || !s.data.plots){ toast('这份存档已经损坏。'); return; }
+  closeMobileZf();
+  G = s.data;
+  if(!G.freeUsed) G.freeUsed = {};
+  SCENE = G.scene || 'hut';
+  PET_SIGNATURE = null;
+  SEASON_NOW = -1;
+  PREV = {};
+  save();
+  closeModal();
+  render();
+  toast('已读取存档 '+n);
+}
+function clearSlot(n){
+  storeRemove(SLOT_KEY+n);
+  openSaves();
+}
 
 /* ======================= 工具 ======================= */
 function toast(msg){
@@ -976,11 +1122,13 @@ function openSeed(idx){
   if(p.state!=='田') return;
   var html = '<h2>下 种</h2><p>这块田的地力是 '+Math.round(p.earth)+'。地薄，收得就少。</p>';
   for(var k in CROPS){
-    var c = CROPS[k], ok = p.earth >= c.min, y = realYield(k, p.earth);
+    var c = CROPS[k], earthOk = p.earth >= c.min, moneyOk = G.money >= c.seed, apOk = G.ap >= 1;
+    var ok = earthOk && moneyOk && apOk, y = realYield(k, p.earth);
     var right = c.price>0 ? ('可收 '+y+' 份 · 净 '+(y*cropPrice(k)-c.seed)+' 文 · 耗地 '+c.earth)
                           : ('可收 '+y+' 株 · 不入市，只换灵石 · 耗地 '+c.earth);
+    var fail = !earthOk ? ('需地力 '+c.min) : (!moneyOk ? ('缺 '+(c.seed-G.money)+' 文') : '余力不足');
     html += '<button class="row '+(ok?'':'ghost')+'" '+(ok?'':'disabled style="opacity:.4"')+' onclick="doSeed('+idx+',\''+k+'\')">'+
-            '<span>'+c.name+'　'+c.seed+' 文 · '+c.grow+' 旬</span><em>'+(ok?right:('需地力 '+c.min))+'</em></button>';
+            '<span>'+c.name+'　'+c.seed+' 文 · '+c.grow+' 旬</span><em>'+(ok?right:fail)+'</em></button>';
   }
   html += '<button class="ghost" onclick="closeModal()">罢了</button>';
   showModal(html);
@@ -1076,13 +1224,16 @@ function puzzleStove(){
 /* ======================= 鸡埘（免费互动） ======================= */
 function openBuyPet(){
   if(G.pets.length >= PET_MAX){ toast('埘里挤不下了。'); return; }
-  var html = '<h2>买 畜 禽</h2><p>埘里添张嘴，院子里才有个动静。</p>';
+  if(G.ap < 1){ toast('这一旬没有余力去买畜禽了。'); return; }
+  var html = '<h2>买 畜 禽</h2><p>埘里添张嘴，院子里才有个动静。买入耗 1 点余力。</p>';
   for(var k in PET_TYPES){
     var t = PET_TYPES[k];
     if(k==='cat') continue;
-    html += '<button class="row ghost" onclick="buyPet(\''+k+'\')"><span><span class="miniPet">'+petArt(k)+'</span>'+t.name+'　'+t.cost+' 文</span>'+
-            '<em>每 '+t.every+' 旬得 '+PRODUCTS[t.product].name+' '+t.yield+' '+PRODUCTS[t.product].unit+
-            ' · 每'+PRODUCTS[t.product].unit+' '+productPrice(t.product)+' 文 · 买入耗 1 力</em></button>';
+    var can = G.money >= t.cost && G.ap >= 1;
+    html += '<button class="row '+(can?'ghost':'')+'" '+(can?'':'disabled style="opacity:.42"')+' onclick="buyPet(\''+k+'\')">'+
+            '<span><span class="miniPet">'+petArt(k)+'</span>'+t.name+'　'+t.cost+' 文</span>'+
+            '<em>'+(can?('每 '+t.every+' 旬得 '+PRODUCTS[t.product].name+' '+t.yield+' '+PRODUCTS[t.product].unit+
+            ' · 每'+PRODUCTS[t.product].unit+' '+productPrice(t.product)+' 文'):('还差 '+(t.cost-G.money)+' 文'))+'</em></button>';
   }
   html += '<button class="ghost" onclick="closeModal()">罢了</button>';
   showModal(html);
@@ -1203,31 +1354,62 @@ function puzzleWell(){
 }
 
 /* ======================= 竹岐县 ======================= */
-function doSell(){
-  var sum=0, parts=[];
+function saleReserve(){
+  var keep = WINTER_MI, nx = STAGES[G.stage+1];
+  if(nx && G.soil < nx.soil) keep += soilCost().crop;
+  return keep;
+}
+function sellPlan(mode){
+  mode = mode || 'safe';
+  var plan = {sum:0, parts:[], crops:{}, products:{}, reserve:saleReserve()};
   for(var k in G.store){
     if(k==='ling') continue;
-    var n=G.store[k];
-    if(n>0){ sum += n*cropPrice(k); parts.push(CROPS[k].name+'×'+n); }
+    var have = G.store[k]||0;
+    var n = have;
+    if(mode==='safe' && k==='mi') n = Math.max(0, have-plan.reserve);
+    if(n>0){ plan.sum += n*cropPrice(k); plan.parts.push(CROPS[k].name+'×'+n); plan.crops[k]=n; }
   }
   for(var pk in PRODUCTS){
     var pn = G.products[pk]||0;
-    if(pn>0){ sum += pn*productPrice(pk); parts.push(PRODUCTS[pk].name+'×'+pn); }
+    if(pn>0){ plan.sum += pn*productPrice(pk); plan.parts.push(PRODUCTS[pk].name+'×'+pn); plan.products[pk]=pn; }
   }
-  if(sum===0){ toast('背篓是空的。'); return; }
+  return plan;
+}
+function doSell(mode){
+  mode = mode || 'safe';
+  var plan = sellPlan(mode);
+  if(plan.sum===0){
+    if(mode==='safe' && sellPlan('all').sum>0) toast('剩下的要留作冬粮和养土口粮，真要卖光就点「全卖」。');
+    else toast('背篓是空的。');
+    return;
+  }
   if(!spendAp(1)) return;
-  for(var k2 in G.store){ if(k2!=='ling') delete G.store[k2]; }
-  for(var p2 in G.products) G.products[p2] = 0;
-  G.money += sum;
-  log('你在县城的摊子上蹲了半日，把'+parts.join('、')+'换成'+sum+'文铜钱。回灵草没舍得卖。','y');
+  for(var k in plan.crops){
+    G.store[k] -= plan.crops[k];
+    if(G.store[k]<=0) delete G.store[k];
+  }
+  for(var pk in plan.products) G.products[pk] = 0;
+  G.money += plan.sum;
+  log('你在县城的摊子上蹲了半日，把'+plan.parts.join('、')+'换成'+plan.sum+'文铜钱。'+
+    (mode==='safe'?'米缸里留了'+plan.reserve+'份糙米，没敢卖空。':'连米缸也见了底。'),'y');
   save(); render();
   if(MOTION){
     var chip = document.getElementById('chMoney');
-    if(chip){ var r=chip.getBoundingClientRect(); floatText(r.left, r.top-8, '+'+sum, 'plus'); }
+    if(chip){ var r=chip.getBoundingClientRect(); floatText(r.left, r.top-8, '+'+plan.sum, 'plus'); }
   }
 }
-function buyAsh(idx){
-  if(G.money < ASH_PRICE){ toast('铜钱不够，八文也拿不出。'); return; }
+function tradeTip(){
+  var nx = STAGES[G.stage+1];
+  if((G.store.mi||0) < WINTER_MI) return '糙米至少留 4 份过冬；冬天米缸见底会折阳寿。';
+  if(nx && G.soil < nx.soil) return '紫府还差活土：养下一寸要 '+soilCost().crop+' 份口粮，别把粮食卖空。';
+  if(nx && G.stone < nx.stone) return '缺灵石时，地力 70 以上种回灵草，四株可在丹房换一枚；回灵草不要卖。';
+  return '青菜周转最快；糙米价高但要先留够冬粮；禽蛋、羊奶、鲜鱼可一并卖掉。';
+}
+function marketPriceLine(){
+  return '青菜 '+cropPrice('qing')+' 文/份　糙米 '+cropPrice('mi')+' 文/份　'+
+    '禽蛋 '+productPrice('egg')+' 文/枚　羊奶 '+productPrice('milk')+' 文/碗　鲜鱼 '+productPrice('fish')+' 文/尾';
+}
+function buyAsh(idx){  if(G.money < ASH_PRICE){ toast('铜钱不够，八文也拿不出。'); return; }
   if(!spendAp(1)) return;
   G.money -= ASH_PRICE;
   var p = G.plots[idx];
@@ -1464,7 +1646,106 @@ function confirmReset(){
     '<button onclick="restart()">重来</button><button class="ghost" onclick="closeModal()">罢了</button>');
 }
 
+/* ======================= 场景彩蛋 ======================= */
+var EGG_SPOTS = {
+  hut:{label:'墙根压着半块旧瓦', flavor:'你搬开墙根那块旧瓦，底下潮气很重，像是许久没人动过。'},
+  field:{label:'田埂草丛里有响动', flavor:'你顺着田埂拨开草，露水打湿了半截袖子。'},
+  pen:{label:'草窝里咕哝了一声', flavor:'草窝里暖烘烘的，你伸手探了探。'},
+  gate:{label:'车辙里闪了一下', flavor:'村口过了一辆车，泥里的东西被车轮碾得半露。'},
+  county:{label:'街角有人掉了东西', flavor:'街角人来人往，墙角却有个东西没被人捡走。'},
+  dao:{label:'旧册里露出半页纸', flavor:'你整理旧物，一张发黄的纸从册页里滑出来。'}
+};
+function sceneEggHtml(){
+  if(!G || G.over) return '';
+  var spot = EGG_SPOTS[SCENE] || {label:'四处看看'};
+  var used = G.freeUsed && G.freeUsed.egg;
+  return '<button class="eggSpot" '+(used?'disabled':'onclick="sceneEgg()"')+'>'+
+    (used?'这一旬已经四处看过了':'偶有微光 · '+spot.label)+'</button>';
+}
+function sceneEgg(){
+  if(!G || G.over) return;
+  if(!freeOnce('egg','这一旬已经四处看过了。')) return;
+  var spot = EGG_SPOTS[SCENE] || {flavor:'你四处看了看。'};
+  var gains = [], tier = G.stage;
+  function takeCrop(k,n){
+    G.store[k] = (G.store[k]||0) + n;
+    gains.push(CROPS[k].name+' +'+n);
+  }
+  function takeCopper(n){ G.money += n; gains.push('铜钱 +'+n+' 文'); }
+  var roll = Math.random();
+  if(SCENE==='hut'){
+    if(roll<0.5) takeCopper(2+Math.floor(Math.random()*(3+tier*2)));
+    else takeCrop('qing', 1+Math.floor(Math.random()*2));
+  }else if(SCENE==='field'){
+    if(roll<0.5) takeCrop('qing', 1+Math.floor(Math.random()*2));
+    else if(tier>=1) takeCrop('mi',1);
+    else takeCopper(3+Math.floor(Math.random()*(2+tier*2)));
+  }else if(SCENE==='pen'){
+    if(G.pets.length){
+      var ap = PET_TYPES[G.pets[Math.floor(Math.random()*G.pets.length)].type];
+      G.products[ap.product] = (G.products[ap.product]||0)+1;
+      gains.push(PRODUCTS[ap.product].name+' +1');
+    }else{
+      G.products.egg = (G.products.egg||0)+1;
+      gains.push('禽蛋 +1');
+    }
+  }else if(SCENE==='gate'){
+    if(roll<0.5) takeCrop('mi',1);
+    else takeCopper(3+Math.floor(Math.random()*(3+tier*2)));
+  }else if(SCENE==='county'){
+    if(roll<0.4){ G.store.ling=(G.store.ling||0)+1; gains.push('回灵草 +1'); }
+    else takeCopper(4+Math.floor(Math.random()*(4+tier*2)));
+  }else{
+    if(roll<0.5){
+      var add=20+tier*10; G.life += add; gains.push('阳寿 +'+(Math.round(add/DAYS_PER_YEAR*10)/10)+' 年');
+    }else takeCopper(5+Math.floor(Math.random()*(4+tier*2)));
+  }
+  log('你随手探了探，得了'+gains.join('、')+'。','e');
+  save(); render();
+  showModal('<h2>偶 得</h2><p>'+spot.flavor+'</p>'+
+    '<div class="calc">'+gains.join('<br>')+'</div>'+
+    '<button onclick="closeModal()">收进袖里</button>');
+}
+
 /* ======================= 渲染 ======================= */
+function nextHint(){
+  var farmed=0, empty=0, mature=0, plantable=false, nx=STAGES[G.stage+1];
+  for(var i=0;i<G.plots.length;i++){
+    var p=G.plots[i];
+    if(p.state==='荒') continue;
+    farmed++;
+    if(p.state==='种' && p.crop && p.grow>=CROPS[p.crop].grow) mature++;
+    if(p.state==='田'){
+      empty++;
+      if(p.earth>=CROPS.qing.min) plantable=true;
+    }
+  }
+  if(!farmed) return {text:'院外还都是荒草。先去<b>灵田</b>，花 2 点余力开一块田。',cta:'去灵田',target:'field'};
+  if(mature) return {text:'有 '+mature+' 块庄稼熟了，去<b>灵田</b>收回来。',cta:'去收获',target:'field'};
+  if(canBreak()) return {text:'资粮已经备齐，打开<b>道途</b>突破。',cta:'去突破',target:'path'};
+  if(empty && plantable && G.money>=1) return {text:'还有空田。下种后过两旬就有收成，<b>青菜</b>回本最快。',cta:'去下种',target:'field'};
+  if(G.money<8 && sellPlan('all').sum>0) return {text:'铜钱见底了，背篓里的东西可以去<b>竹岐县</b>换钱。',cta:'去卖货',target:'county'};
+  if(nx && G.soil<nx.soil){
+    var sc=soilCost();
+    if(feedTotal()<sc.crop) return {text:'紫府还差 '+(nx.soil-G.soil)+' 寸活土。先留足 <b>'+sc.crop+' 份口粮</b>，再养下一寸。',cta:'去种粮',target:'field'};
+    if(G.money<sc.money) return {text:'养土还差 <b>'+(sc.money-G.money)+' 文</b>，卖些青菜或禽蛋。',cta:'去卖货',target:'county'};
+    return {text:'口粮与铜钱够了，打开<b>紫府</b>养第 '+(G.soil+1)+' 寸土。',cta:'开紫府',target:'zf'};
+  }
+  if(nx && G.stone<nx.stone) return {text:'突破还差 <b>'+(nx.stone-G.stone)+' 枚灵石</b>。地力到 70 就种回灵草，四株换一枚。',cta:'去灵田',target:'field'};
+  if(nx && G.money<nx.money) return {text:'突破还差 <b>'+(nx.money-G.money)+' 文</b>，去县城卖余粮。',cta:'去县城',target:'county'};
+  if(empty) return {text:'空田闲着也是闲着，地力不足就先<b>歇田</b>。',cta:'去灵田',target:'field'};
+  return {text:'活都做完了，<b>过旬</b>歇一歇，等庄稼长。',cta:'',target:''};
+}
+function hintGo(target){
+  if(!target) return;
+  if(target==='zf'){
+    if(window.matchMedia && window.matchMedia('(max-width:880px)').matches) openMobileZf();
+    else showZfGuide();
+    return;
+  }
+  if(target==='path'){ openMobilePath(); return; }
+  goScene(target);
+}
 function render(){
   if(!G) return;
   applySeason(true);
@@ -1483,6 +1764,10 @@ function render(){
     '<div class="chip danger'+(low?' low':'')+'" id="chLife">阳寿 <b id="numLife">'+lifeYears()+'</b> 年</div>'+
     '<div class="chip">'+stageName()+'</div>'+
     '<div class="chip zf">紫府 <b id="numSoil">'+G.soil+'</b>/'+ZF_MAX+'</div>';
+
+  var nh = nextHint(), hb = document.getElementById('hintBar');
+  hb.innerHTML = '<span class="tag">下一步</span><span class="hintText">'+nh.text+'</span>'+
+    (nh.cta ? '<button onclick="hintGo(\''+nh.target+'\')">'+nh.cta+'</button>' : '');
 
   if(PREV.money!==undefined && PREV.money!==G.money) countTo(document.getElementById('numMoney'), PREV.money, G.money);
   if(PREV.stone!==undefined && PREV.stone!==G.stone) countTo(document.getElementById('numStone'), PREV.stone, G.stone);
@@ -1524,15 +1809,18 @@ function render(){
   bb.disabled = !canBreak();
   bb.textContent = nx ? ('突 破 · '+nx.name) : '已 至 结 丹';
 
-  var hasWaste=false;
-  for(var ww=0;ww<G.plots.length;ww++) if(G.plots[ww].state==='荒') hasWaste=true;
+  var hasWaste=false, hasMature=false;
+  for(var ww=0;ww<G.plots.length;ww++){
+    if(G.plots[ww].state==='荒') hasWaste=true;
+    if(G.plots[ww].state==='种' && G.plots[ww].grow>=CROPS[G.plots[ww].crop].grow) hasMature=true;
+  }
   var ah = '<button class="act sys" onclick="openMobileZf()">紫府<span>'+G.soil+' / '+ZF_MAX+'</span></button>'+
            '<button class="act sys" onclick="openMobilePath()">道途<span>'+stageName()+'</span></button>';
   for(var a=0;a<ACTIONS.length;a++){
     var ac=ACTIONS[a], dis=false;
     if(ac.id==='open' && SCENE!=='field') continue;
     if(ac.id==='open') dis = ((!hasWaste && G.plots.length>=9) || G.money<openCost() || G.ap<2);
-    if(ac.id==='harv') dis = (G.ap<1);
+    if(ac.id==='harv') dis = (G.ap<1 || !hasMature);
     var acSub = ac.id==='open' ? ('2 力 · '+openCost()+' 文') : ac.sub;
     ah += '<button class="act'+(ac.pass?' pass':'')+'" '+(dis?'disabled':'')+' onclick="ACT(\''+ac.id+'\')">'+
           ac.name+'<span>'+acSub+'</span></button>';
@@ -1595,9 +1883,9 @@ function renderScene(){
           '<div class="fbar"><i style="width:'+Math.min(100,50+G.total*0.6)+'%"></i></div><em>总蹲在草边，说它们在说话</em></div>'+
       '</div>'+
       '<div class="sc-acts">'+
-        '<button class="free" '+(G.flags.momDead?'disabled':'')+' onclick="talkMom()">陪母亲坐一会儿　每旬一次</button>'+
-        '<button class="free" '+(G.flags.momDead?'disabled':'')+' onclick="brewMedicine()">熬一锅药粥　耗 2 份糙米 · 每旬一次</button>'+
-        '<button class="quiet" onclick="puzzleStove()">看看灶膛</button>'+
+        '<button class="free" '+((G.flags.momDead||G.freeUsed.mom)?'disabled':'')+' onclick="talkMom()">陪母亲坐一会儿　每旬一次</button>'+
+        '<button class="free" '+((G.flags.momDead||(G.store.mi||0)<2||G.freeUsed.brew)?'disabled':'')+' onclick="brewMedicine()">熬一锅药粥　耗 2 份糙米 · 每旬一次</button>'+
+        '<button class="quiet" '+((G.flags.cat||seasonIdx()!==3||G.freeUsed.stove)?'disabled':'')+' onclick="puzzleStove()">看看灶膛</button>'+
       '</div>';
   }
 
@@ -1617,19 +1905,22 @@ function renderScene(){
         ph += '<div class="plot" data-i="'+i+'"><span class="no">'+names[i]+'</span>'+
               '<div class="nm">空田</div><div class="bar earth"><i style="width:'+p.earth+'%"></i></div>'+
               '<div class="st">地力 '+Math.round(p.earth)+'</div><div style="flex:1"></div>'+
-              '<div class="rw"><button onclick="openSeed('+i+')">下种</button>'+
-              '<button onclick="doRest('+i+')" '+(p.earth>=100?'disabled':'')+'>歇田</button></div></div>';
+              '<div class="rw"><button onclick="openSeed('+i+')" '+((G.ap<1||G.money<1)?'disabled':'')+'>下种</button>'+
+              '<button onclick="doRest('+i+')" '+((p.earth>=100||G.ap<1)?'disabled':'')+'>歇田</button></div></div>';
         continue;
       }
       var c=CROPS[p.crop], pct=Math.round(p.grow/c.grow*100), done=p.grow>=c.grow;
+      var leftGrow=Math.max(0,c.grow-p.grow);
+      var hcost=Math.round(leftGrow*ZF_MULT*DAYS_PER_XUN*(hasTrait('t_eye')?0.9:1));
+      var canHasten = G.soil>=1 && G.cd<=0 && G.life>hcost;
       ph += '<div class="plot" data-i="'+i+'"><span class="no">'+names[i]+'</span>'+
             '<div class="nm">'+c.name+'</div>'+
             '<div class="st">'+(done?('可收 '+realYield(p.crop,p.earth)+' 份'):(p.grow+' / '+c.grow+' 旬'))+'</div>'+
             '<div class="bar"><i style="width:'+pct+'%"></i></div>'+
             '<div class="bar earth"><i style="width:'+p.earth+'%"></i></div>'+
             '<div style="flex:1"></div>'+
-            (done?'<button class="go" onclick="doHarvest('+i+')">收</button>'
-                 :'<button class="zi" onclick="doHasten('+i+')">催熟</button>')+'</div>';
+            (done?'<button class="go" onclick="doHarvest('+i+')" '+(G.ap<1?'disabled':'')+'>收</button>'
+                 :'<button class="zi" onclick="doHasten('+i+')" '+(canHasten?'':'disabled')+'>催熟</button>')+'</div>';
     }
     var fw = [
       '田埂上的草冒了头，你顺手掐掉，指甲缝里留了一道绿。',
@@ -1653,12 +1944,13 @@ function renderScene(){
         var pt=G.pets[j], tp=PET_TYPES[pt.type], pd=PRODUCTS[tp.product];
         var prog = Math.round(pt.prodT/tp.every*100);
         var verb = tp.product==='egg' ? '产蛋' : (tp.product==='milk' ? '挤奶' : '出猎');
+        var canFeed = ((G.store.qing||0)>=1 || (G.store.mi||0)>=1) && !G.freeUsed['feed'+j];
         list += '<div class="fcard"><span class="cardPet">'+petArt(pt.type)+'</span><div class="fn">'+tp.name+'</div>'+
                 '<div class="fbar"><i style="width:'+prog+'%"></i></div>'+
                 '<em>'+verb+' '+pt.prodT+' / '+tp.every+' 旬 · 每'+pd.unit+' '+productPrice(tp.product)+' 文</em>'+
                 '<div style="margin-top:6px"><button style="width:100%;font-family:inherit;font-size:11.5px;'+
                 'padding:4px;border-radius:2px;border:1px solid #c2ccb0;background:#eef1e6;color:#4c5a3c;cursor:pointer" '+
-                'onclick="feedPet('+j+')">添食　耗 1 份 · 每旬一次</button></div></div>';
+                (canFeed?'':'disabled style="opacity:.38"')+' onclick="feedPet('+j+')">添食　耗 1 份 · 每旬一次</button></div></div>';
       }
     }
     body = '<div class="vn"><p>'+
@@ -1668,7 +1960,7 @@ function renderScene(){
        '天冷，它们挤成一团。你多铺了一层干草，又添了半瓢水。'][si]+
       '</p></div>'+
       '<div class="famrow">'+list+'</div>'+
-      '<div class="sc-acts"><button class="hot" '+(G.pets.length>=PET_MAX?'disabled':'')+' onclick="openBuyPet()">买畜禽　24 文起 · 1 力</button>'+
+      '<div class="sc-acts"><button class="hot" '+((G.pets.length>=PET_MAX||G.money<24||G.ap<1)?'disabled':'')+' onclick="openBuyPet()">买畜禽　24 文起 · 1 力</button>'+
       '<button class="quiet" onclick="toast(\'现有 '+productSummary()+'\')">产物 '+productTotal()+'</button></div>';
     sub = '牲畜 '+G.pets.length+' / '+PET_MAX+' · '+productSummary();
   }
@@ -1686,7 +1978,9 @@ function renderScene(){
         '</p>'+
         '<p>里正蒋三每十八旬来一趟，一块田八文，一文不能少。他从不多说一个字。</p>'+
       '</div>'+
-      '<div class="famrow">'+
+      '<div class="sc-acts"><button class="free" '+(G.freeUsed.news?'disabled':'')+' onclick="askNews()">听人说闲话　免费 · 每旬一次</button></div>'+
+      rumorBoxHtml()+
+      '<div class="famrow" style="margin-top:10px">'+
         '<div class="fcard">'+icon('official',true)+'<div class="fn">蒋三 · 里正</div>'+
           '<div class="fbar"><i style="width:'+Math.min(100,taxLeft()/TAX_EVERY*100)+'%"></i></div>'+
           '<em>'+taxLeft()+' 旬后来收租 · '+taxNeed()+' 文</em></div>'+
@@ -1695,20 +1989,22 @@ function renderScene(){
         '<div class="fcard">'+portrait('neighbor',ageNow(16))+'<div class="fn">阿禾　'+ageNow(16)+'岁</div>'+
           '<div class="fbar"><i style="width:70%"></i></div><em>隔壁家的女儿，嘴碎，心热</em></div>'+
       '</div>'+
-      '<div class="tree" onclick="puzzleTree()"><div class="glyph">'+icon('tree')+'</div><div class="hint">村口的老槐树 · 每旬可来一次</div></div>'+
-      '<div class="sc-acts"><button class="free" onclick="askNews()">听人说闲话　免费 · 每旬一次</button></div>'+
-      rumorBoxHtml();
+      '<div class="tree" onclick="puzzleTree()"><div class="glyph">'+icon('tree')+'</div><div class="hint">村口的老槐树 · 每旬可来一次</div></div>';
   }
 
   /* ---------- 竹岐县 ---------- */
   else if(SCENE==='county'){
     title='竹岐县'; sub = '县城';
-    var sellSum=0, parts=[];
-    for(var k2 in G.store){ if(k2==='ling') continue; var n2=G.store[k2]; if(n2>0){ sellSum+=n2*cropPrice(k2); parts.push(CROPS[k2].name+'×'+n2);} }
-    for(var pk2 in PRODUCTS){
-      var pn2=G.products[pk2]||0;
-      if(pn2>0){ sellSum += pn2*productPrice(pk2); parts.push(PRODUCTS[pk2].name+'×'+pn2); }
-    }
+    var safePlan = sellPlan('safe'), allPlan = sellPlan('all');
+    var sellSum = safePlan.sum, parts = safePlan.parts, reserve = safePlan.reserve;
+    var sellBtns = '<div style="display:flex;gap:4px;margin-top:6px">'+
+      '<button style="flex:1;font-family:inherit;font-size:11.5px;padding:5px;border-radius:2px;'+
+      'border:1px solid #849a72;background:#849a72;color:#fff;cursor:pointer" '+
+      (sellSum>0 && G.ap>=1?'':'disabled style="opacity:.35"')+' onclick="doSell(\'safe\')">卖余粮　1 力</button>'+
+      (allPlan.sum>sellSum ? '<button style="font-family:inherit;font-size:10.5px;padding:5px 7px;border-radius:2px;'+
+      'border:1px solid #d8cbb4;background:#f2ebdd;color:#7a5a3a;cursor:pointer" '+
+      (G.ap>=1?'':'disabled style="opacity:.35"')+' onclick="doSell(\'all\')">全卖</button>' : '')+
+      '</div>';
     var rows='';
     for(var m=0;m<G.plots.length;m++){
       var pp=G.plots[m];
@@ -1716,7 +2012,7 @@ function renderScene(){
       rows += '<div class="req"><span>'+names[m]+'田 · 地力 '+Math.round(pp.earth)+'</span>'+
               '<b><button style="font-family:inherit;font-size:11px;padding:2px 9px;border-radius:2px;'+
               'border:1px solid #d8cbb4;background:#f2ebdd;color:#54462f;cursor:pointer" '+
-              'onclick="buyAsh('+m+')" '+(pp.earth>=100?'disabled style="opacity:.35"':'')+'>施肥 '+ASH_PRICE+' 文</button></b></div>';
+              'onclick="buyAsh('+m+')" '+((pp.earth>=100||G.money<ASH_PRICE||G.ap<1)?'disabled style="opacity:.35"':'')+'>施肥 '+ASH_PRICE+' 文</button></b></div>';
     }
     var ling = G.store.ling||0;
     body =
@@ -1727,10 +2023,8 @@ function renderScene(){
       '<div class="famrow">'+
         '<div class="fcard">'+icon('market',true)+'<div class="fn">采药堂前</div>'+
           '<div class="fbar"><i style="width:100%"></i></div>'+
-          '<em>'+(sellSum>0?('可卖 '+sellSum+' 文'):'背篓是空的')+'</em>'+
-          '<div style="margin-top:6px"><button style="width:100%;font-family:inherit;font-size:11.5px;padding:5px;'+
-          'border-radius:2px;border:1px solid #849a72;background:#849a72;color:#fff;cursor:pointer" '+
-          (sellSum>0?'':'disabled style="opacity:.35"')+' onclick="doSell()">卖　1 力</button></div></div>'+
+          '<em>'+(sellSum>0?('卖余粮得 '+sellSum+' 文 · 留 '+reserve+' 份糙米'):(allPlan.sum>0?'余粮需留作冬粮':'背篓是空的'))+'</em>'+
+          sellBtns+'</div>'+
         '<div class="fcard">'+icon('alchemy',true)+'<div class="fn">丹房</div>'+
           '<div class="fbar"><i style="width:'+Math.min(100,ling/LING_PER_STONE*100)+'%"></i></div>'+
           '<em>回灵草 '+ling+' / '+LING_PER_STONE+' 株，可换一枚灵石</em>'+
@@ -1738,6 +2032,7 @@ function renderScene(){
           'border-radius:2px;border:1px solid #7d6bc4;background:#7d6bc4;color:#fff;cursor:pointer" '+
           (ling>=LING_PER_STONE && G.ap>=1 ?'':'disabled style="opacity:.35"')+' onclick="refineStone()">换灵石 · 1 力</button></div></div>'+
       '</div>'+
+      '<div class="tradeHelp"><b>今日行价</b>　'+marketPriceLine()+'<em>'+tradeTip()+'</em></div>'+
       '<div class="sc-acts" style="flex-direction:column;gap:4px">'+rows+'</div>';
     sub = (parts.length ? parts.join('、') : '背篓空空')+' · 灵石 '+G.stone+' 枚';
   }
@@ -1766,6 +2061,15 @@ function renderScene(){
         '<div><div class="hn">'+heroFull()+' · '+heroAge()+' 岁</div><div class="hm">武国平州竹岐县 · 柳溪村</div></div>'+
         '<div class="hs"><b>'+stageName()+'</b><br>每旬余力 '+apMax()+' 点</div>'+
       '</div>'+
+      '<div class="stageCurve">'+(function(){
+        var h='';
+        for(var si2=0;si2<STAGES.length;si2++){
+          if(si2) h+='<i>›</i>';
+          h+='<span class="'+(si2<=G.stage?'on':'')+(si2===G.stage?' cur':'')+'">'+STAGES[si2].name+'</span>';
+        }
+        return h;
+      })()+'</div>'+
+      '<div class="curveNote">每破一境，每旬余力 +1，寿元增长；所需灵石、活土与铜钱也逐境抬升。</div>'+
       (function(){
         var got=0, cards='';
         for(var ti=0;ti<TRAITS.length;ti++){
@@ -1789,7 +2093,7 @@ function renderScene(){
 
   document.getElementById('sceneTitle').textContent = title;
   document.getElementById('sceneSub').textContent = sub;
-  document.getElementById('sceneBody').innerHTML = body;
+  document.getElementById('sceneBody').innerHTML = body + sceneEggHtml();
   mountPets();
 }
 
