@@ -1,0 +1,1751 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>紫府仙缘</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html{height:100%}
+body{
+  font-family:"KaiTi","STKaiti","Songti SC","PingFang SC","Microsoft YaHei",serif;
+  color:#33291f;background:#e9e2d4;line-height:1.72;font-size:14px;min-height:100%;
+  transition:background-color 1s ease;
+}
+.app{max-width:1120px;margin:0 auto;padding:10px;display:flex;flex-direction:column;gap:8px;min-height:100vh;position:relative;z-index:2}
+
+#seasonFx{position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:40}
+#seasonFx i{position:absolute;top:-30px;display:block;border-radius:50%;opacity:.5;will-change:transform}
+
+/* 顶栏 */
+.top{background:#faf6ee;border:1px solid #d8cbb4;border-radius:3px;padding:9px 14px;
+  display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between}
+.top h1{font-size:15px;font-weight:400;letter-spacing:5px;color:#6f4526}
+.top h1 small{font-size:10px;letter-spacing:2px;color:#a08e78;margin-left:8px}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{background:#f2ebdd;border:1px solid #d8cbb4;border-radius:2px;padding:3px 10px;font-size:11.5px;color:#6f5c48;white-space:nowrap}
+.chip b{color:#6f4526;font-weight:400;font-size:13px;font-variant-numeric:tabular-nums}
+.chip.jade{background:#eef2ea;border-color:#b9c9ae;color:#4d6242}
+.chip.jade b{color:#3f5735}
+.chip.danger{background:#f6e8e5;border-color:#d9b5ae;color:#8f3a2c}
+.chip.danger b{color:#8f3a2c}
+.chip.danger.low{animation:pulseRed 1.8s ease-in-out infinite}
+@keyframes pulseRed{0%,100%{box-shadow:0 0 0 0 rgba(143,58,44,0)}50%{box-shadow:0 0 0 4px rgba(143,58,44,.15)}}
+.chip.ap{background:#eef1e6;border-color:#c2ccb0;color:#4c5a3c}
+.chip.zf{background:#e8e5f2;border-color:#bbb3d6;color:#494080}
+.chip.zf b{color:#494080}
+.dots{letter-spacing:2px;font-size:12px}
+.dots i{font-style:normal;color:#8aa87a;opacity:.18;transition:opacity .15s}
+.dots i.on{opacity:1}
+
+/* 布局 */
+.main{display:grid;grid-template-columns:1fr 320px;gap:8px;align-items:stretch;flex:1}
+@media(max-width:880px){.main{grid-template-columns:1fr}}
+.main > .panel{display:flex;flex-direction:column;min-height:340px}
+
+.panel{background:#faf6ee;border:1px solid #d8cbb4;border-radius:3px;padding:11px 14px}
+.panel h3{font-size:12.5px;font-weight:400;letter-spacing:4px;color:#7a4f30;
+  border-bottom:1px solid #e0d5c0;padding-bottom:6px;margin-bottom:9px;
+  display:flex;justify-content:space-between;align-items:center}
+.panel h3 em{font-style:normal;font-size:10.5px;color:#a08e78;letter-spacing:0}
+
+.scene{flex:1;min-height:0;position:relative;display:flex;flex-direction:column;overflow-y:auto;overflow-x:hidden}
+
+/* 视觉小说叙述 */
+.vn{font-size:13.5px;color:#4a3c2e;line-height:2.05;letter-spacing:.3px;
+  padding:2px 2px 12px;border-bottom:1px dashed #e0d5c0;margin-bottom:11px}
+.vn p{margin-bottom:7px}
+.vn p:last-child{margin-bottom:0}
+.vn .say{color:#7a4f30}
+.vn .em{color:#8f3a2c}
+.vn .zi{color:#5a4bb8}
+
+/* 田 */
+.yard{position:relative;min-height:220px}
+.plots{display:grid;grid-template-columns:repeat(auto-fill,minmax(126px,1fr));gap:7px;align-content:start}
+.plot{background:#fdfaf3;border:1px solid #ddd0bb;border-radius:3px;padding:8px 9px;
+  display:flex;flex-direction:column;gap:4px;position:relative;min-height:132px}
+.plot .no{position:absolute;right:8px;top:5px;font-size:10px;color:#c0af94;letter-spacing:1px}
+.plot .nm{font-size:12.5px;color:#54462f;letter-spacing:1px;padding-right:16px}
+.plot .st{font-size:10.5px;color:#9c8a70;min-height:14px}
+.bar{height:4px;background:#e9e0cd;border-radius:2px;overflow:hidden}
+.bar i{display:block;height:100%;background:#849a72;border-radius:2px;transition:width .3s ease}
+.bar.earth{background:#e6dcc6}
+.bar.earth i{background:#ad8657}
+.plot .rw{display:flex;gap:4px}
+.plot .rw button{flex:1}
+.plot.waste{background:#f5f0e4;border-style:dashed}
+.plot.waste .nm{color:#ad9c85}
+.plot button{font-family:inherit;font-size:11.5px;padding:4px 0;border-radius:2px;cursor:pointer;
+  border:1px solid #d8cbb4;background:#f2ebdd;color:#54462f;transition:background .12s}
+.plot button:hover:not(:disabled){background:#e9dfc9}
+.plot button:disabled{opacity:.35;cursor:default}
+.plot button.go{background:#849a72;border-color:#849a72;color:#fff}
+.plot button.go:hover{background:#748a62}
+.plot button.zi{background:#7d6bc4;border-color:#7d6bc4;color:#fff}
+.plot button.zi:hover{background:#6d5ab4}
+
+/* 水墨线稿图标 */
+.inkIcon{display:inline-block;width:23px;height:23px;flex:0 0 auto;vertical-align:middle;
+  fill:none;stroke:currentColor;stroke-width:1.55;stroke-linecap:round;stroke-linejoin:round;opacity:.82}
+.inkIcon.big{width:34px;height:34px;stroke-width:1.35}
+.fcard .inkIcon.big{color:#7a4f30}
+.tree .glyph .inkIcon{width:92px;height:92px;stroke-width:1.1;opacity:.78}
+
+/* 家 */
+.famrow{display:grid;grid-template-columns:repeat(auto-fit,minmax(126px,1fr));gap:8px;margin-bottom:10px}
+.fcard{background:#fdfaf3;border:1px solid #ddd0bb;border-radius:3px;padding:10px 11px}
+.fcard .fn{font-size:13px;color:#54462f;letter-spacing:1px;margin-top:5px}
+.fcard .fbar{height:3px;background:#e9e0cd;border-radius:2px;margin:7px 0 4px;overflow:hidden}
+.fcard .fbar i{display:block;height:100%;background:#b08a8a;border-radius:2px;transition:width .3s}
+.fcard em{font-style:normal;font-size:10.5px;color:#9c8a70;line-height:1.5;display:block}
+
+.sc-acts{display:flex;flex-wrap:wrap;gap:6px;margin-top:2px}
+.sc-acts button{font-family:inherit;font-size:12.5px;padding:8px 14px;border-radius:2px;cursor:pointer;
+  border:1px solid #d8cbb4;background:#fdfaf3;color:#4a3c2e;transition:background .12s}
+.sc-acts button:hover:not(:disabled){background:#f2ebdd}
+.sc-acts button:disabled{opacity:.35;cursor:default}
+.sc-acts button.free{border-color:#c2ccb0;background:#eef1e6;color:#4c5a3c}
+.sc-acts button.hot{background:#849a72;border-color:#849a72;color:#fff}
+.sc-acts button.hot:hover{background:#748a62}
+.sc-acts button.quiet{background:#f5f0e4;border-color:#e0d5c0;color:#9c8a70;font-size:11.5px}
+
+/* 老槐树 */
+.tree{width:100%;height:140px;display:grid;place-items:center;cursor:pointer;user-select:none;position:relative}
+.tree .glyph{font-size:76px;line-height:1;filter:drop-shadow(0 6px 6px rgba(80,60,40,.22))}
+.tree .hint{position:absolute;bottom:0;font-size:10.5px;color:#c0af94;letter-spacing:2px}
+
+/* 道行 */
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:8px}
+.st{background:#fdfaf3;border:1px solid #ddd0bb;border-radius:3px;padding:9px 11px}
+.st span{font-size:10.5px;color:#9c8a70;letter-spacing:2px;display:block}
+.st b{font-size:17px;font-weight:400;color:#54462f;font-variant-numeric:tabular-nums}
+.traitHead{display:flex;justify-content:space-between;align-items:center;margin:13px 0 6px;
+  font-size:11.5px;letter-spacing:4px;color:#7a4f30}
+.traitHead em{font-style:normal;font-size:10.5px;letter-spacing:0;color:#a08e78}
+.traits{display:grid;grid-template-columns:repeat(auto-fit,minmax(145px,1fr));gap:6px}
+.trait{background:#f5f0e4;border:1px dashed #ddd0bb;border-radius:2px;padding:7px 9px;opacity:.58}
+.trait.on{background:#eef1e6;border:1px solid #b9c9ae;opacity:1}
+.trait b{display:block;font-size:12px;font-weight:400;letter-spacing:1px;color:#9c8a70}
+.trait.on b{color:#3f5735}
+.trait em{display:block;font-style:normal;font-size:10px;line-height:1.55;color:#a08e78;margin-top:2px}
+.trait.on em{color:#657a58}
+
+/* 人物 */
+.heroCard{display:flex;gap:11px;align-items:center;background:#fdfaf3;border:1px solid #ddd0bb;
+  border-radius:3px;padding:9px 12px;margin-top:10px}
+.heroCard .hn{font-size:13.5px;color:#54462f;letter-spacing:1px}
+.heroCard .hm{font-size:10.5px;color:#9c8a70;line-height:1.7}
+.heroCard .hs{margin-left:auto;text-align:right;font-size:10.5px;color:#a08e78;line-height:1.7}
+.heroCard .hs b{font-weight:400;color:#6f4526}
+
+/* 传闻 */
+.rumorBox{border:1px solid #e0d5c0;background:#fdfaf3;border-radius:3px;margin-top:10px;overflow:hidden}
+.rumorHead{display:flex;justify-content:space-between;align-items:center;padding:6px 10px;
+  border-bottom:1px dashed #e6dccb;background:#f7f1e6;font-size:11px;letter-spacing:3px;color:#8a6420}
+.rumorHead em{font-style:normal;letter-spacing:0;font-size:10px;color:#b0a08a}
+.rumorBox .empty{padding:12px 10px;font-size:11.5px;color:#b0a08a}
+.rumorBox p{font-size:12px;line-height:1.75;color:#5d4e3c;padding:7px 10px;border-bottom:1px dotted #eee5d3}
+.rumorBox p:last-child{border-bottom:0}
+.rumorBox time{font-size:10px;color:#b0a08a;margin-right:7px;font-variant-numeric:tabular-nums}
+
+/* 紫府指引 */
+.zfguide{width:100%;margin-top:6px;font-family:inherit;font-size:11px;padding:5px;border-radius:2px;
+  border:1px dashed #464070;background:transparent;color:#9c93c8;cursor:pointer;letter-spacing:2px}
+.zfguide:hover{background:#25213f;color:#d4cdf2}
+.guideNow{background:#f2ebdd;border-left:2px solid #7d6bc4;padding:8px 10px;font-size:12px;
+  line-height:1.85;color:#5d4e3c;margin-bottom:11px}
+.guideNow b{font-weight:400;color:#5a4bb8}
+
+/* 家畜 */
+#petLayer{position:fixed;inset:0;overflow:hidden;pointer-events:none;z-index:12}
+.pet{position:absolute;left:0;top:0;line-height:1;cursor:pointer;user-select:none;will-change:transform;z-index:5;pointer-events:auto}
+.pet .body{display:inline-block;font-size:34px;line-height:1;
+  filter:drop-shadow(0 4px 4px rgba(90,70,50,.3));will-change:transform;transform-origin:50% 100%}
+.pet .shadow{position:absolute;left:50%;bottom:-3px;width:22px;height:6px;border-radius:50%;
+  transform:translateX(-50%);background:radial-gradient(closest-side,rgba(90,70,50,.2),transparent);z-index:-1}
+.pet .bub{position:absolute;left:50%;bottom:100%;margin-bottom:5px;transform:translateX(-50%);
+  white-space:nowrap;font-size:11px;font-family:"PingFang SC","Microsoft YaHei",sans-serif;color:#6b5a4a;
+  background:#fdfaf3;border:1px solid #ddd0bb;border-radius:3px;padding:1px 7px;opacity:0;pointer-events:none}
+
+/* 紫府 */
+.zfbox{background:#15122a;border-radius:3px;padding:11px 12px;color:#cbc4e6;position:relative;overflow:hidden;
+  border:1px solid #2b2746}
+.zfbox h3{border-bottom:1px solid #332e52;color:#b0a6e0;font-size:12.5px;font-weight:400;letter-spacing:4px;
+  padding-bottom:6px;margin-bottom:9px;display:flex;justify-content:space-between;position:relative;z-index:3}
+.zfbox h3 em{font-style:normal;font-size:10.5px;color:#7a71a4;letter-spacing:0}
+.well{position:relative;height:104px;border-radius:3px;overflow:hidden;margin-bottom:9px;cursor:pointer;
+  box-shadow:inset 0 0 26px rgba(0,0,0,.85),inset 0 2px 0 rgba(150,130,255,.1)}
+.well .fog{position:absolute;inset:-40%;pointer-events:none;
+  background:radial-gradient(closest-side,rgba(150,150,168,.15),transparent 70%),
+             radial-gradient(closest-side at 70% 60%,rgba(120,120,140,.12),transparent 72%);
+  filter:blur(4px)}
+.well .bolt{position:absolute;inset:0;opacity:0;pointer-events:none}
+.well .bolt svg{width:100%;height:100%}
+.cells{position:absolute;left:9px;right:9px;bottom:9px;display:grid;
+  grid-template-columns:repeat(10,1fr);gap:3px;z-index:2}
+.cells i{height:11px;border-radius:1px;background:#282440;border:1px solid #38325c;
+  transition:background .5s,border-color .5s,box-shadow .5s;will-change:transform}
+.cells i.on{background:linear-gradient(180deg,#5fbf93,#3a855e);border-color:#74d8a8;
+  box-shadow:0 0 7px rgba(95,191,147,.7)}
+.zfstat{font-size:11.5px;color:#9890bf;margin-bottom:8px;display:flex;justify-content:space-between;position:relative;z-index:3}
+.zfstat b{color:#c5bdf0;font-weight:400}
+.zfbtn{width:100%;font-family:inherit;font-size:12.5px;padding:7px;border-radius:2px;cursor:pointer;
+  border:1px solid #464070;background:#2f2a50;color:#cbc4e6;transition:background .12s;position:relative;z-index:3}
+.zfbtn:hover:not(:disabled){background:#3a3461}
+.zfbtn:disabled{opacity:.35;cursor:default}
+.zfnote{font-size:10.5px;color:#7a71a4;margin-top:7px;line-height:1.55;position:relative;z-index:3}
+.zfgoal{font-size:10.5px;color:#b9b0e2;margin-top:6px;padding-top:6px;border-top:1px dashed #332e52;
+  position:relative;z-index:3;line-height:1.6}
+.zfgoal b{font-weight:400;color:#d4cdf2}
+
+/* 道途 */
+.path{background:#faf6ee;border:1px solid #d8cbb4;border-radius:3px;padding:11px 14px}
+.path h3{font-size:12.5px;font-weight:400;letter-spacing:4px;color:#7a4f30;
+  border-bottom:1px solid #e0d5c0;padding-bottom:6px;margin-bottom:9px;
+  display:flex;justify-content:space-between;align-items:center}
+.path h3 em{font-style:normal;font-size:10.5px;color:#a08e78;letter-spacing:0}
+.req{font-size:11.5px;color:#6f5c48;display:flex;justify-content:space-between;padding:2px 0}
+.req b{font-weight:400;color:#4a3c2e;font-variant-numeric:tabular-nums}
+.req.ok b{color:#3f7a4a}
+.req.no b{color:#8f3a2c}
+.path button{width:100%;font-family:inherit;font-size:12.5px;padding:7px;border-radius:2px;cursor:pointer;
+  border:1px solid #849a72;background:#849a72;color:#fff;margin-top:8px;transition:background .12s}
+.path button:disabled{opacity:.3;cursor:default;background:#bdb3a2;border-color:#bdb3a2}
+.path button:not(:disabled):hover{background:#748a62}
+
+/* 行动 */
+.acts{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.act{font-family:inherit;font-size:12.5px;padding:9px 6px;border-radius:2px;cursor:pointer;
+  border:1px solid #d8cbb4;background:#fdfaf3;color:#4a3c2e;transition:background .12s;
+  display:flex;flex-direction:column;align-items:center;gap:2px;will-change:transform}
+.act:hover:not(:disabled){background:#f2ebdd}
+.act:disabled{opacity:.35;cursor:default}
+.act span{font-size:10px;color:#9c8a70}
+.act.pass{background:#849a72;border-color:#849a72;color:#fff}
+.act.pass span{color:#e4ebd9}
+.act.pass:hover{background:#748a62}
+
+/* 底部导航 */
+.nav{display:flex;flex-wrap:wrap;gap:5px;background:#faf6ee;border:1px solid #d8cbb4;border-radius:3px;padding:5px}
+.nav button{flex:1 1 auto;min-width:84px;font-family:inherit;font-size:12.5px;letter-spacing:2px;
+  padding:8px 4px;border-radius:2px;cursor:pointer;background:#f5efe3;border:1px solid #e0d5c0;
+  color:#6f5c48;transition:background .16s,color .16s,border-color .16s;
+  display:flex;align-items:center;justify-content:center;gap:6px}
+.nav button:hover{background:#eee6d5}
+.nav button.on{background:#7a4f30;border-color:#7a4f30;color:#f7f1e5}
+.nav button.on .inkIcon{opacity:1}
+
+/* 日志 */
+.log{background:#faf6ee;border:1px solid #d8cbb4;border-radius:3px;padding:10px 14px;max-height:120px;overflow-y:auto}
+.log p{font-size:12.5px;color:#5d4e3c;padding:3px 0;border-bottom:1px dotted #eee5d3;line-height:1.7}
+.log p:last-child{border-bottom:none}
+.log .t{color:#a08e78;font-size:10.5px;margin-right:6px}
+.log .g{color:#3f7a4a}
+.log .r{color:#8f3a2c}
+.log .z{color:#5a4bb8}
+.log .y{color:#8a6420}
+.log .e{color:#a8527a}
+
+#fxLayer{position:fixed;inset:0;pointer-events:none;z-index:90;overflow:hidden}
+.ftxt{position:absolute;font-family:"PingFang SC","Microsoft YaHei",sans-serif;font-size:14px;font-weight:600;
+  color:#7a4f30;text-shadow:0 1px 0 #fff,0 0 8px rgba(255,255,255,.9);will-change:transform,opacity}
+.ftxt.plus{color:#3f7a4a}
+.ftxt.minus{color:#8f3a2c}
+.ftxt.zi{color:#5a4bb8}
+#flash{position:fixed;inset:0;pointer-events:none;z-index:95;opacity:0;
+  background:radial-gradient(closest-side,rgba(255,255,255,.9),rgba(140,120,255,.32) 45%,transparent 72%)}
+
+#modal{position:fixed;inset:0;background:rgba(28,20,14,.6);display:none;align-items:center;justify-content:center;padding:16px;z-index:50}
+#modal.on{display:flex}
+.mbox{background:#faf6ee;border-radius:4px;padding:24px 26px;max-width:520px;width:100%;max-height:86vh;overflow-y:auto;
+  box-shadow:0 18px 50px rgba(0,0,0,.32);will-change:transform,opacity;border:1px solid #d8cbb4}
+.mbox h2{font-size:16px;font-weight:400;letter-spacing:6px;color:#6f4526;text-align:center;margin-bottom:16px}
+.mbox p{font-size:13px;color:#4a3c2e;margin-bottom:11px;line-height:2}
+.mbox .q{color:#7a4f30}
+.mbox .calc{background:#f2ebdd;border-radius:2px;padding:10px 12px;font-size:12.5px;color:#5d4e3c;margin-bottom:11px;line-height:2}
+.mbox .calc b{color:#6f4526;font-weight:400}
+.mbox button{width:100%;font-family:inherit;font-size:13.5px;padding:10px;border-radius:2px;cursor:pointer;
+  border:1px solid #849a72;background:#849a72;color:#fff;margin-top:6px;transition:background .12s}
+.mbox button.ghost{background:#f2ebdd;border-color:#d8cbb4;color:#5d4e3c}
+.mbox button.row{display:flex;justify-content:space-between;align-items:center;text-align:left}
+.mbox button.row em{font-style:normal;font-size:11px;opacity:.8}
+.toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%);background:rgba(40,30,20,.92);color:#f2ebdd;
+  padding:9px 20px;border-radius:2px;font-size:12.5px;z-index:60;opacity:0;transition:opacity .2s;pointer-events:none}
+.toast.on{opacity:1}
+
+@media (prefers-reduced-motion: reduce){
+  #seasonFx{display:none}
+  .chip.danger.low{animation:none}
+}
+</style>
+</head>
+<body>
+<div id="seasonFx"></div>
+<div id="petLayer" aria-label="同行灵宠"></div>
+<div id="fxLayer"></div>
+<div id="flash"></div>
+
+<div class="app">
+  <header class="top">
+    <h1>紫府仙缘<small>竹岐县 · 柳溪村</small></h1>
+    <div class="chips" id="chips"></div>
+  </header>
+
+  <div class="main">
+    <section class="panel">
+      <h3><span id="sceneTitle">茅屋</span><em id="sceneSub"></em></h3>
+      <div class="scene" id="sceneBody"></div>
+    </section>
+
+    <aside style="display:flex;flex-direction:column;gap:8px">
+      <div class="zfbox">
+        <h3>紫 府<em id="zfHint"></em></h3>
+        <div class="well" id="well" title="……">
+          <div class="fog" id="fog"></div>
+          <div class="bolt" id="bolt">
+            <svg viewBox="0 0 200 100" preserveAspectRatio="none">
+              <path d="M60 0 L72 34 L58 36 L78 66 L64 68 L84 100" fill="none" stroke="#b9a4ff" stroke-width="1.6" opacity=".9"/>
+              <path d="M132 0 L120 28 L136 30 L118 58" fill="none" stroke="#d9ccff" stroke-width="1.1" opacity=".7"/>
+            </svg>
+          </div>
+          <div class="cells" id="scale"></div>
+        </div>
+        <div class="zfstat"><span>养熟 <b id="soilNum">0</b> 寸</span><span>休养 <b id="cdNum">0</b> 旬</span></div>
+        <button class="zfbtn" id="btnSoil">养土</button>
+        <button class="zfguide" onclick="showZfGuide()">紫 府 要 诀</button>
+        <div class="zfnote">紫府借时，一旬之催，偿以三十旬之寿。井底光阴，从不赊欠。</div>
+        <div class="zfgoal" id="zfGoal"></div>
+      </div>
+
+      <div class="path">
+        <h3>道 途<em id="stageNow">力农</em></h3>
+        <div id="reqs"></div>
+        <button id="btnBreak">突 破</button>
+      </div>
+
+      <div class="panel" style="padding:10px 11px">
+        <div class="acts" id="acts"></div>
+      </div>
+    </aside>
+  </div>
+
+  <nav class="nav" id="nav"></nav>
+  <div class="log" id="log"></div>
+</div>
+
+<div id="modal"><div class="mbox" id="mbox"></div></div>
+<div class="toast" id="toast"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script>
+/* ==========================================================
+   紫府仙缘   v0.7
+   世界观：武国平州竹岐县，城外柳溪村
+   资源：铜钱（凡俗）· 灵石（修真）· 回灵草（资粮）
+   ========================================================== */
+
+var CROPS = {
+  qing: {name:'青菜',   seed:1,  grow:2, yield:3, price:2,  earth:4,  min:20},
+  mi:   {name:'糙米',   seed:3,  grow:4, yield:4, price:4,  earth:15, min:40},
+  ling: {name:'回灵草', seed:12, grow:6, yield:4, price:0,  earth:28, min:70}
+};
+
+var STAGES = [
+  {name:'力农', life:60,  stone:0,  money:0,    soil:0},
+  {name:'养气', life:80,  stone:1,  money:0,    soil:0},
+  {name:'炼气', life:120, stone:3,  money:80,   soil:2},
+  {name:'筑基', life:200, stone:10, money:350,  soil:8},
+  {name:'结丹', life:400, stone:16, money:650,  soil:14}
+];
+
+var PET_TYPES = {
+  chicken: {emoji:'🐓', name:'公鸡', cost:24, eggEvery:12},
+  duck:    {emoji:'🦆', name:'麻鸭', cost:30, eggEvery:10},
+  goat:    {emoji:'🐐', name:'山羊', cost:40, eggEvery:16},
+  cat:     {emoji:'🐈', name:'狸猫', cost:0,  eggEvery:6, special:'fish'}
+};
+
+/* 词条不是摆设：每一枚都有实际增益，条件写在卡面，玩家自己养出来 */
+var TRAITS = [
+  {id:'t_qing', name:'田垄识字', req:'累计收获 30 份', gain:'青菜每份多卖 1 文',
+    check:function(){ return G.harvest>=30; }},
+  {id:'t_mi', name:'百担之收', req:'累计收获 100 份', gain:'糙米每份多卖 1 文',
+    check:function(){ return G.harvest>=100; }},
+  {id:'t_soil', name:'十寸活土', req:'紫府养熟 10 寸', gain:'养土少耗 1 份口粮',
+    check:function(){ return G.soil>=10; }},
+  {id:'t_plots', name:'六田连阡', req:'名下开满 6 块田', gain:'每次开荒少花 1 文',
+    check:function(){ return G.plots.length>=6; }},
+  {id:'t_pets', name:'六畜兴旺', req:'养满 3 只生灵', gain:'每枚蛋多卖 1 文',
+    check:function(){ return G.pets.length>=3; }},
+  {id:'t_cat', name:'灰里有猫', req:'冬夜拨开第五次灶灰', gain:'紫府催熟少休养 1 旬',
+    check:function(){ return G.flags.cat; }},
+  {id:'t_eye', name:'井底有眼', req:'在井边守足十次', gain:'催熟少耗一成阳寿',
+    check:function(){ return G.flags.eye; }},
+  {id:'t_jade', name:'半块碎玉', req:'敲响村口老槐七次', gain:'养土少花一成铜钱',
+    check:function(){ return G.flags.jade; }},
+  {id:'t_base', name:'筑基之身', req:'修为臻至筑基', gain:'每旬余力比炼气多 1 点',
+    check:function(){ return G.stage>=3; }},
+  {id:'t_secret', name:'不可说', req:'有一段无人知晓的机缘', gain:'井水会记得你',
+    check:function(){ return G.flags.konami; }}
+];
+function hasTrait(id){
+  for(var i=0;i<TRAITS.length;i++) if(TRAITS[i].id===id) return TRAITS[i].check();
+  return false;
+}
+
+var ZF_MAX = 30, ZF_MULT = 30, DAYS_PER_YEAR = 360, DAYS_PER_XUN = 10;
+var AP_MAX = 3, TAX_EVERY = 18, WINTER_EVERY = 36, WINTER_MI = 4, REST_GAIN = 15;
+var EGG_PRICE = 3, PET_MAX = 3, ASH_PRICE = 8, ASH_GAIN = 25;
+var LING_PER_STONE = 4;          // 四株回灵草，可在丹房换一枚下品灵石
+
+var GAN = '甲乙丙丁戊己庚辛壬癸';
+var ZHI = '子丑寅卯辰巳午未申酉戌亥';
+
+var SEASONS = [
+  {name:'春', bg:'#eef3e8', pf:'#f2c6d4', shape:'petal'},
+  {name:'夏', bg:'#eaf2e9', pf:'#d2ea8a', shape:'spark'},
+  {name:'秋', bg:'#f4eddd', pf:'#dba25c', shape:'leaf'},
+  {name:'冬', bg:'#eaeef4', pf:'#ffffff', shape:'snow'}
+];
+
+var SCENES = [
+  {id:'hut',    name:'茅屋'},
+  {id:'field',  name:'灵田'},
+  {id:'pen',    name:'鸡埘'},
+  {id:'gate',   name:'村口'},
+  {id:'county', name:'竹岐县'},
+  {id:'dao',    name:'道行'}
+];
+
+/* 统一水墨线稿：不依赖字体、表情或外部图标库 */
+var ICONS = {
+  hut:'<path d="M3 11 12 4l9 7M5 10v10h14V10M10 20v-6h4v6"/>',
+  field:'<path d="M3 18c4-5 14-5 18 0M3 13c4-5 14-5 18 0M5 8c3-3 11-3 14 0M12 4v4"/>',
+  pen:'<path d="M4 20V9l8-5 8 5v11M3 20h18M8 20v-7h8v7M8 9h8"/><path d="M10 16h4"/>',
+  gate:'<path d="M4 20V7M20 20V7M2 7h20M5 3h14l2 4H3l2-4ZM8 11h8M12 7v13"/>',
+  county:'<path d="M3 21h18M5 21V9h14v12M3 9h18L12 3 3 9ZM9 21v-6h6v6M8 11h8"/>',
+  dao:'<path d="M12 3a9 9 0 1 0 9 9M12 7a5 5 0 1 1-5 5M12 10a2 2 0 1 0 2 2"/><path d="m17 3 1 2 2 1-2 1-1 2-1-2-2-1 2-1 1-2Z"/>',
+  mother:'<circle cx="12" cy="7" r="3"/><path d="M6 21v-3a6 6 0 0 1 12 0v3M8 5c1-3 7-3 8 0M9 14l3 3 3-3"/>',
+  motherOld:'<circle cx="12" cy="8" r="3"/><path d="M6 21v-3a6 6 0 0 1 10-4M8 6c1-3 7-3 8 0M8 11l-2 2M17 5l3 1M7 21h10"/>',
+  heroYoung:'<circle cx="12" cy="8" r="3.1"/><path d="M8.6 6.5c.4-4 6.4-4 6.8 0M8 5.5 6 3.5M16 5.5l2-2M7 21v-2.8a5 5 0 0 1 10 0V21M9 21v-4h6v4"/>',
+  heroAdult:'<circle cx="12" cy="7" r="3.1"/><path d="M8.8 5.2c.3-3.5 6.1-3.5 6.4 0M12 2v2M6 21v-3a6 6 0 0 1 12 0v3M9 14l3 2 3-2M5 10l-2 3"/>',
+  heroOlder:'<circle cx="12" cy="7.5" r="3"/><path d="M9 5c.4-3 5.6-3 6 0M12 2.5v1.5M6 21v-3a6 6 0 0 1 10-4M9 14l3 2 3-1M4 12v8M4 20h3"/>',
+  youth:'<circle cx="12" cy="7" r="3"/><path d="M6 21v-3a6 6 0 0 1 12 0v3M9 4h6M4 18l4-4M17 5l4-3M18 2h3v3"/>',
+  brotherChild:'<circle cx="10.5" cy="6.5" r="3.6"/><path d="M7 5.3c.7-3.2 6.3-3.2 7 0M10.5 2.9V2.1M8.7 2.1h3.6M7 19v-1.8c0-2.8 1.4-4 3.5-4s3.5 1.2 3.5 4V19M7 19h7M15 13.5h5M18 11.5v4M9 13.5l-2 2M12 13.5l2 2"/>',
+  brotherYouth:'<circle cx="11" cy="7" r="3"/><path d="M8 5c.5-3 5.5-3 6 0M11 2v2M5 21v-3a6 6 0 0 1 12 0v3M15 8l3-2"/>',
+  brotherMan:'<circle cx="11" cy="7" r="3"/><path d="M8 5c.5-3 5.5-3 6 0M5 21v-3a6 6 0 0 1 12 0v3M9 9c1 1 3 1 4 0M8 3h6"/>',
+  girl:'<circle cx="12" cy="7" r="3"/><path d="M6 21v-3a6 6 0 0 1 12 0v3M8 5 5 3M16 5l3-2M5 15l-2 2 3 2"/>',
+  sisterChild:'<circle cx="12" cy="8" r="3"/><path d="M8 7c.5-3 7.5-3 8 0M6 6a2 2 0 1 0 0-4 2 2 0 0 0 0 4ZM18 6a2 2 0 1 0 0-4 2 2 0 0 0 0 4ZM7 21v-2a5 5 0 0 1 10 0v2M9 16l3 2 3-2"/>',
+  sisterYoung:'<circle cx="12" cy="7" r="3"/><path d="M8.5 5c.5-3.5 6.5-3.5 7 0M16 5l2-2M7 21v-3a5 5 0 0 1 10 0v3M6 13l-2 2 2 2M9 14l3 2 3-2"/>',
+  sisterWoman:'<circle cx="12" cy="7" r="3"/><path d="M8.5 5c.5-3.5 6.5-3.5 7 0M12 2C15 4 15 8 13 10M6 21v-3a6 6 0 0 1 10-4M8 13l-1 5"/>',
+  neighbor:'<circle cx="10" cy="7" r="2.8"/><path d="M7 5c.5-2.5 5.5-2.5 6 0M13 4l2-2M5 21v-3a5 5 0 0 1 9-3M15 15h6l-1 5h-4l-1-5ZM17 15v-2M16 13h3"/>',
+  neighborAdult:'<circle cx="10" cy="7" r="2.8"/><path d="M7 5c.5-2.5 5.5-2.5 6 0M13 4l2-2M5 21v-3a5 5 0 0 1 9-3M16 11l4 2M15 16h6l-1 5h-4l-1-5Z"/>',
+  elder:'<circle cx="11" cy="7" r="2.8"/><path d="M8 5c1-2 5-2 6 0M7 21c0-5 2-8 5-9l3 2M6 14c2 1 4 1 6 0M18 11v10M16 21h4"/>',
+  official:'<path d="M4 9h16l-3-5H7L4 9ZM8 9v3M16 9v3"/><circle cx="12" cy="11" r="2.2"/><path d="M6 21l2-7h8l2 7M10 16c1 1 3 1 4 0M10 18c1 1 3 1 4 0"/>',
+  market:'<path d="M4 10v11h16V10M3 10l2-6h14l2 6M3 10c2 3 4 3 6 0 2 3 4 3 6 0 2 3 4 3 6 0M9 21v-6h6v6"/>',
+  alchemy:'<path d="M9 3h6M10 3v6l-5 8c-1 2 1 4 3 4h8c2 0 4-2 3-4l-5-8V3M8 14h8"/><path d="M10 17c1-1 3-1 4 0"/>',
+  tree:'<path d="M12 22v-8M12 17l-5-4M12 15l5-4M8 22h8"/><path d="M12 3c-3-3-7 0-6 3-4 0-5 5-2 7-1 4 4 6 6 3 2 4 8 2 8-2 4-1 4-6 1-7 1-4-4-6-7-4Z"/>'
+};
+function icon(name, big){
+  return '<svg class="inkIcon'+(big?' big':'')+'" viewBox="0 0 24 24" aria-hidden="true">'+(ICONS[name]||ICONS.dao)+'</svg>';
+}
+function ageNow(base){ return base + G.year - 1; }
+function heroAge(){ return ageNow(15); }
+function portrait(role, age){
+  var key;
+  if(role==='hero') key = age<18?'heroYoung':(age<40?'heroAdult':'heroOlder');
+  else if(role==='brother') key = age<16?'brotherChild':(age<32?'brotherYouth':'brotherMan');
+  else if(role==='sister') key = age<15?'sisterChild':(age<30?'sisterYoung':'sisterWoman');
+  else if(role==='mother') key = age<58?'mother':'motherOld';
+  else key = age<30?'neighbor':'neighborAdult';
+  return icon(key, true);
+}
+
+/* ======================= 动效 ======================= */
+var HAS_GSAP = typeof window.gsap !== 'undefined';
+var REDUCE = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+var MOTION = HAS_GSAP && !REDUCE;
+var MT = { fast:0.16, base:0.30, slow:0.55 };
+var ME = { out:'power3.out', back:'back.out(1.7)', inOut:'power2.inOut' };
+
+function countTo(el, from, to){
+  if(!el) return;
+  if(!MOTION){ el.textContent = fmt(to); return; }
+  var o = {v:from}; gsap.killTweensOf(o);
+  gsap.to(o, { v:to, duration:MT.slow, ease:ME.out, overwrite:true,
+    onUpdate:function(){ el.textContent = fmt(o.v); } });
+}
+function fmt(v){ return (Math.round(v*10)/10).toString().replace(/\.0$/,''); }
+
+function floatText(x, y, text, cls){
+  var layer = document.getElementById('fxLayer');
+  var d = document.createElement('div');
+  d.className = 'ftxt ' + (cls||''); d.textContent = text;
+  d.style.left = x+'px'; d.style.top = y+'px';
+  layer.appendChild(d);
+  if(!MOTION){ setTimeout(function(){ d.remove(); }, 600); return; }
+  gsap.fromTo(d, { y:0, opacity:0, scale:.7 }, { y:-44, opacity:1, scale:1, duration:MT.base, ease:ME.back });
+  gsap.to(d, { y:-84, opacity:0, duration:MT.slow, delay:MT.base, ease:'power1.in', onComplete:function(){ d.remove(); } });
+}
+function flash(){
+  if(!MOTION) return;
+  var f = document.getElementById('flash');
+  gsap.fromTo(f, { opacity:0 }, { opacity:.85, duration:.12,
+    onComplete:function(){ gsap.to(f, { opacity:0, duration:.75, ease:'power2.out' }); } });
+}
+function shake(el, amp){
+  if(!MOTION || !el) return;
+  gsap.fromTo(el, { x:-amp }, { x:0, duration:.5, ease:'elastic.out(1,0.35)' });
+}
+
+/* ======================= 状态 ======================= */
+var G = null;
+var SCENE = 'hut';
+var SAVE_KEY = 'zifu_tianji_v6';
+var PREV = {};
+
+function mk(state){ return {state:state, crop:null, grow:0, earth: state==='荒'?0:100}; }
+
+function newGame(){
+  G = {
+    v:6,
+    year:1, month:1, xun:0, turn:0, ap:AP_MAX,
+    money:30, stone:0, life:60*DAYS_PER_YEAR, stage:0,
+    total:0, harvest:0,
+    plots:[mk('荒'),mk('荒'),mk('荒')],
+    store:{}, eggs:0,
+    soil:0, cd:0,
+    pets:[], scene:'hut', mom:62,
+    rumors:[],
+    flags:{ tree:0, well:0, stove:0, jade:false, eye:false, cat:false, konami:false, momDead:false },
+    logs:[], over:false, lastTax:0, lastWinter:0
+  };
+}
+
+function save(){ try{ localStorage.setItem(SAVE_KEY, JSON.stringify(G)); }catch(e){} }
+function load(){
+  try{
+    var raw = localStorage.getItem(SAVE_KEY);
+    if(!raw) return false;
+    var d = JSON.parse(raw);
+    if(!d || !d.plots || d.v!==6) return false;
+    G = d;
+    var def = {turn:0,ap:AP_MAX,money:30,stone:0,stage:0,total:0,harvest:0,store:{},eggs:0,
+      soil:0,cd:0,pets:[],scene:'hut',mom:62,rumors:[],logs:[],over:false,lastTax:0,lastWinter:0};
+    for(var k in def){ if(G[k]===undefined) G[k]=def[k]; }
+    if(!G.flags) G.flags={tree:0,well:0,stove:0,jade:false,eye:false,cat:false,konami:false,momDead:false};
+    SCENE = G.scene || 'hut';
+    return true;
+  }catch(e){ return false; }
+}
+function clearSave(){ try{ localStorage.removeItem(SAVE_KEY); }catch(e){} }
+
+/* ======================= 工具 ======================= */
+function toast(msg){
+  var t=document.getElementById('toast');
+  t.textContent=msg; t.classList.add('on');
+  clearTimeout(t._h); t._h=setTimeout(function(){ t.classList.remove('on'); },1700);
+}
+function ganzhi(y){ var i=(y-1)%60; return GAN.charAt(i%10)+ZHI.charAt(i%12); }
+function dateStr(){ return ganzhi(G.year)+'年'+G.month+'月'+['上','中','下'][G.xun]+'旬'; }
+function log(msg, cls){
+  G.logs.unshift({m:msg, c:cls||'', d:G.month+'月'+['上','中','下'][G.xun]+'旬'});
+  if(G.logs.length>70) G.logs.pop();
+}
+function stageName(){ return STAGES[G.stage].name; }
+function lifeYears(){ return Math.round(G.life/DAYS_PER_YEAR*10)/10; }
+function feedTotal(){ var n=0; for(var k in G.store) if(k!=='ling') n+=G.store[k]; return n; }
+function apMax(){ return AP_MAX + G.stage; }
+function cropPrice(k){
+  var p = CROPS[k].price;
+  if(k==='qing' && hasTrait('t_qing')) p++;
+  if(k==='mi' && hasTrait('t_mi')) p++;
+  return p;
+}
+function eggPrice(){ return EGG_PRICE + (hasTrait('t_pets')?1:0); }
+function openCost(){ return Math.max(3, 4-(hasTrait('t_plots')?1:0)); }
+function earthCoef(e){ return 0.5 + 0.5*e/100; }
+function realYield(crop, e){ var n = Math.round(CROPS[crop].yield*earthCoef(e)); return n<1?1:n; }
+function addStore(crop,n){ G.store[crop]=(G.store[crop]||0)+n; G.total+=n; G.harvest+=n; }
+function seasonIdx(){ return Math.floor((G.month-1)/3); }
+
+/* ======================= 季节 ======================= */
+var SEASON_NOW = -1;
+function applySeason(animate){
+  var i = seasonIdx(), s = SEASONS[i];
+  if(i === SEASON_NOW) return;
+  var first = SEASON_NOW < 0;
+  SEASON_NOW = i;
+  if(animate && MOTION && !first) gsap.to(document.body, { backgroundColor:s.bg, duration:1.2, ease:ME.inOut });
+  else document.body.style.backgroundColor = s.bg;
+  buildSeasonFx(i);
+}
+function buildSeasonFx(i){
+  var box = document.getElementById('seasonFx');
+  box.innerHTML = '';
+  if(!MOTION) return;
+  var s = SEASONS[i], H = window.innerHeight || 800;
+  for(var k=0;k<14;k++){
+    var d = document.createElement('i');
+    var size = 3 + Math.random()*4;
+    d.style.width = size+'px'; d.style.height = size+'px';
+    d.style.background = s.pf;
+    d.style.borderRadius = s.shape==='leaf' ? '60% 10% 60% 10%' : '50%';
+    d.style.left = (Math.random()*100)+'%';
+    if(s.shape==='spark') d.style.boxShadow = '0 0 8px '+s.pf;
+    box.appendChild(d);
+    var up = (s.shape==='spark');
+    var fromY = up ? H*0.9 : -30, toY = up ? -40 : H+40;
+    var dur = 7 + Math.random()*9, drift = (Math.random()*2-1)*110;
+    var tw = gsap.fromTo(d, { y:fromY, x:0, rotation:0 },
+      { y:toY, x:drift, rotation: up?0:360, duration:dur, repeat:-1, ease: up?'sine.inOut':'none',
+        onRepeat:function(){ gsap.set(this.targets()[0], { x:0 }); } });
+    tw.time(Math.random()*dur);
+  }
+}
+
+/* ======================= 场景切换 ======================= */
+function goScene(id){
+  if(SCENE === id) return;
+  SCENE = id; G.scene = id; save(); renderNav(); renderScene();
+  var el = document.getElementById('sceneBody');
+  if(!MOTION || !el) return;
+  gsap.fromTo(el, { opacity:0, y:12 }, { opacity:1, y:0, duration:MT.base, ease:ME.out });
+  setTimeout(function(){ if(el){ el.style.opacity=''; el.style.transform=''; } }, 700);
+}
+
+/* ======================= 时间 ======================= */
+function spendAp(n){
+  if(G.ap < n){ toast('这一旬的力气用尽了。歇一歇罢。'); return false; }
+  G.ap -= n; return true;
+}
+
+function passXun(){
+  if(G.over) return;
+  G.xun++;
+  if(G.xun>2){ G.xun=0; G.month++; }
+  if(G.month>12){ G.month=1; G.year++; }
+
+  for(var p=0;p<G.plots.length;p++){
+    var pl=G.plots[p];
+    if(pl.state==='种' && pl.crop && pl.grow < CROPS[pl.crop].grow) pl.grow++;
+  }
+  if(G.cd>0) G.cd--;
+  G.turn++; G.ap = apMax(); G.life -= DAYS_PER_XUN;
+
+  tickPets();
+  if(G.life<=0){ ending('阳寿在这一旬走到了尽头。'); return; }
+  checkEvents(); save();
+  if(G.over) return;
+  render();
+  if(!G.over) maybeEvent();
+}
+
+function checkEvents(){
+  if(G.turn - G.lastTax >= TAX_EVERY) doTax();
+  if(G.turn - G.lastWinter >= WINTER_EVERY) doWinter();
+}
+
+/* 紫府突发：不常来，来了要作选择 */
+function maybeEvent(){
+  if(G.over || G.turn < 8 || Math.random() >= 0.09) return;
+  var hasCrop = G.plots.some(function(p){ return p.state==='种' && p.crop; });
+  var possible = ['well'];
+  if(hasCrop && G.soil>0) possible.push('bolt');
+  possible.push('merchant');
+  var pick = possible[Math.floor(Math.random()*possible.length)];
+  if(pick==='well') eventWell();
+  else if(pick==='bolt') eventBolt();
+  else eventMerchant();
+}
+function eventDone(msg, cls){
+  if(msg) log(msg, cls||'z');
+  closeModal(); save(); render();
+}
+function eventWell(){
+  var can = feedTotal()>=2 && G.soil<ZF_MAX;
+  showModal('<h2>井 底 有 声</h2>'+
+    '<p>入夜，井里传来很轻的吞咽声。灰雾贴着井壁往上爬，停在第三圈刻度上，像在等什么。</p>'+
+    '<p class="q">它饿了。</p>'+
+    '<div class="calc">埋 2 份口粮：紫府直接养熟 1 寸<br>不耗铜钱，不占余力。</div>'+
+    '<button '+(can?'onclick="evWellFeed()"':'disabled style="opacity:.4"')+'>'+
+      (can?'把口粮撒下去':'口粮不够，只能听着')+'</button>'+
+    '<button class="ghost" onclick="eventDone(\'你把井口压上石板。那声音低了下去，没有走远。\',\'\')">封住井口</button>');
+}
+function evWellFeed(){
+  if(feedTotal()<2 || G.soil>=ZF_MAX){ toast('做不成了。'); return; }
+  consumeFeed(2); G.soil++;
+  eventDone('你把两份口粮撒进井里。土面轻轻一陷，又松了一寸。','z');
+  lightCell(G.soil-1);
+}
+function eventBolt(){
+  var cost = Math.round(DAYS_PER_YEAR*0.8*(hasTrait('t_eye')?0.9:1));
+  var can = G.life>cost;
+  showModal('<h2>紫 电 落 田</h2>'+
+    '<p>一道紫电从井口窜出，贴着地皮掠过去。田里的苗都直了一瞬，叶尖发亮。</p>'+
+    '<p class="q">紫府肯借，但要拿阳寿来抵。</p>'+
+    '<div class="calc">划去约 <b>'+(Math.round(cost/DAYS_PER_YEAR*10)/10)+' 年</b> 阳寿<br>'+
+      '所有在种的田：生长推进 1 旬，地力 +5</div>'+
+    '<button '+(can?'onclick="evBoltTake('+cost+')"':'disabled style="opacity:.4"')+'>引电入田</button>'+
+    '<button class="ghost" onclick="eventDone(\'你退到檐下。紫电在半空散了，落下一层细灰。\',\'\')">任它散去</button>');
+}
+function evBoltTake(cost){
+  if(G.life<=cost){ toast('阳寿不够了。'); return; }
+  G.life -= cost;
+  var n=0;
+  for(var i=0;i<G.plots.length;i++){
+    var p=G.plots[i];
+    if(p.state==='种' && p.crop){
+      p.grow = Math.min(CROPS[p.crop].grow, p.grow+1);
+      p.earth = Math.min(100, p.earth+5); n++;
+    }
+  }
+  eventDone(n?('紫电钻进土里。'+n+' 块田的苗一夜之间高了一截。你的手背多了几道细纹。'):'紫电落了空。','z');
+}
+function eventMerchant(){
+  showModal('<h2>夜 半 叩 门</h2>'+
+    '<p>一个披蓑衣的人站在门外，不进屋。他从袖里摸出一枚青灰色的小石，放在门槛上。</p>'+
+    '<p class="q">「六十文。来路你不必问。」</p>'+
+    '<div class="calc">铜钱 -60 文<br>灵石 +1 枚</div>'+
+    '<button '+(G.money>=60?'onclick="evBuyStone()"':'disabled style="opacity:.4"')+'>买下</button>'+
+    '<button class="ghost" onclick="eventDone(\'你摇了摇头。那人把石头收回袖里，转身走进雨里。\',\'\')">关门</button>');
+}
+function evBuyStone(){
+  if(G.money<60){ toast('铜钱不够。'); return; }
+  G.money -= 60; G.stone++;
+  eventDone('石头入手是温的。等你抬头，门外只剩一行湿脚印。','z');
+}
+
+function taxNeed(){
+  var farm=0;
+  for(var i=0;i<G.plots.length;i++) if(G.plots[i].state!=='荒') farm++;
+  return farm*8;
+}
+function taxLeft(){ return TAX_EVERY - (G.turn - G.lastTax); }
+
+function doTax(){
+  G.lastTax = G.turn;
+  var need = taxNeed();
+  if(need<=0) return;
+  if(G.money >= need){
+    G.money -= need;
+    log('蒋三来收租。你把铜钱数了三遍，'+need+'文，一枚不多。他掂了掂，收进褡裢，没说话。','y');
+  }else{
+    for(var j=G.plots.length-1;j>=0;j--){
+      if(G.plots[j].state!=='荒'){ G.plots[j]=mk('荒'); break; }
+    }
+    log('铜钱不够。蒋三没抬眼，只弯腰把你一块田的界石拔了，扔在垄上。','r');
+    G.money = 0;
+  }
+}
+
+function doWinter(){
+  G.lastWinter = G.turn;
+  if((G.store.mi||0) >= WINTER_MI){
+    G.store.mi -= WINTER_MI;
+    G.mom = Math.min(100, G.mom + 5);
+    log('入冬。灶上煨了一锅糙米粥，母亲喝了半碗，说今年比去年暖和些。','g');
+  }else{
+    G.life -= 1800;
+    G.mom = Math.max(0, G.mom - 18);
+    log('入冬。米缸见了底。母亲咳了整夜，你隔着门板听着，没敢进去。','r');
+    G.store.mi = 0;
+    shake(document.querySelector('.app'), 8);
+    if(G.mom<=0 && !G.flags.momDead){
+      G.flags.momDead = true;
+      log('天亮时母亲的手凉了。你握着，一直到日头上房梁。','r');
+    }
+  }
+}
+
+/* ======================= 全局行动 ======================= */
+var ACTIONS = [
+  {id:'open', name:'开荒', sub:'2 力 · 4 文'},
+  {id:'harv', name:'收获', sub:'1 力'},
+  {id:'pass', name:'过 旬', sub:'时辰往前走', pass:true},
+  {id:'reset',name:'重开', sub:'清档'}
+];
+function ACT(id){
+  if(id==='open') return doOpen();
+  if(id==='harv') return doHarvestAll();
+  if(id==='pass') return passXun();
+  if(id==='reset') return confirmReset();
+}
+function doOpen(){
+  var waste=-1;
+  for(var i=0;i<G.plots.length;i++) if(G.plots[i].state==='荒'){ waste=i; break; }
+  if(waste<0 && G.plots.length>=9){ toast('没有更多荒可开了。'); return; }
+  if(G.money<openCost()){ toast('铜钱不够，'+openCost()+' 文也拿不出。'); return; }
+  if(!spendAp(2)) return;
+  G.money -= openCost();
+  if(waste>=0) G.plots[waste] = {state:'田',crop:null,grow:0,earth:100};
+  else G.plots.push(mk('田'));
+  log('你刨了大半日，掌心磨出三个血泡，换来一块田。土里有碎石子，得一颗颗捡出去。','');
+  save(); render();
+}
+function doHarvestAll(){
+  var n=0, parts=[];
+  for(var i=0;i<G.plots.length;i++){
+    var p=G.plots[i];
+    if(p.state==='种' && p.crop && p.grow>=CROPS[p.crop].grow){
+      var y = realYield(p.crop, p.earth);
+      addStore(p.crop, y);
+      parts.push(CROPS[p.crop].name+'×'+y);
+      G.plots[i] = {state:'田',crop:null,grow:0,earth:Math.max(0,p.earth-CROPS[p.crop].earth)};
+      n++;
+    }
+  }
+  if(n===0){ toast('还没有能收的。'); return; }
+  if(!spendAp(1)) return;
+  log('收了 '+n+' 块地。'+parts.join('、')+'。手指缝里全是泥。','g');
+  save(); render();
+  if(MOTION) gsap.fromTo('.plot', { scale:.94 }, { scale:1, duration:.5, ease:'elastic.out(1,0.6)', stagger:.04 });
+}
+
+/* ======================= 灵田 ======================= */
+function openSeed(idx){
+  var p = G.plots[idx];
+  if(p.state!=='田') return;
+  var html = '<h2>下 种</h2><p>这块田的地力是 '+Math.round(p.earth)+'。地薄，收得就少。</p>';
+  for(var k in CROPS){
+    var c = CROPS[k], ok = p.earth >= c.min, y = realYield(k, p.earth);
+    var right = c.price>0 ? ('可收 '+y+' 份 · 净 '+(y*cropPrice(k)-c.seed)+' 文 · 耗地 '+c.earth)
+                          : ('可收 '+y+' 株 · 不入市，只换灵石 · 耗地 '+c.earth);
+    html += '<button class="row '+(ok?'':'ghost')+'" '+(ok?'':'disabled style="opacity:.4"')+' onclick="doSeed('+idx+',\''+k+'\')">'+
+            '<span>'+c.name+'　'+c.seed+' 文 · '+c.grow+' 旬</span><em>'+(ok?right:('需地力 '+c.min))+'</em></button>';
+  }
+  html += '<button class="ghost" onclick="closeModal()">罢了</button>';
+  showModal(html);
+}
+function doSeed(idx,k){
+  var c = CROPS[k], p = G.plots[idx];
+  if(!p || p.state!=='田'){ toast('这块田不能种。'); return; }
+  if(p.earth < c.min){ toast('地力不够，需 '+c.min+'。'); return; }
+  if(G.money < c.seed){ toast('铜钱不够。'); return; }
+  if(!spendAp(1)) return;
+  G.money -= c.seed;
+  G.plots[idx] = {state:'种',crop:k,grow:0,earth:p.earth};
+  log('你把'+c.name+'的种子按进土里。指腹沾了一层湿，凉的。','');
+  closeModal(); save(); render(); popPlot(idx);
+}
+function popPlot(idx){
+  if(!MOTION) return;
+  var el = document.querySelector('.plot[data-i="'+idx+'"]');
+  if(el) gsap.fromTo(el, { scale:.92 }, { scale:1, duration:.55, ease:'elastic.out(1,0.5)' });
+}
+function doHarvest(idx){
+  var p = G.plots[idx];
+  if(p.state!=='种' || !p.crop) return;
+  var c = CROPS[p.crop];
+  if(p.grow < c.grow){ toast('还没熟。'); return; }
+  if(!spendAp(1)) return;
+  var y = realYield(p.crop, p.earth);
+  addStore(p.crop, y);
+  var ne = Math.max(0, p.earth - c.earth);
+  log('收了一季'+c.name+'，'+y+'份。地力从 '+Math.round(p.earth)+' 掉到 '+Math.round(ne)+'。','g');
+  G.plots[idx] = {state:'田',crop:null,grow:0,earth:ne};
+  save(); render(); flyToChip(idx, '+'+y+' '+c.name, c.price>0?'plus':'zi');
+}
+function flyToChip(idx, text, cls){
+  if(!MOTION) return;
+  var el = document.querySelector('.plot[data-i="'+idx+'"]');
+  var chip = document.getElementById('chMoney');
+  if(!el || !chip) return;
+  var a = el.getBoundingClientRect();
+  floatText(a.left + a.width/2 - 26, a.top + 12, text, cls);
+}
+function doRest(idx){
+  var p = G.plots[idx];
+  if(p.state!=='田'){ toast('只有空田能歇。'); return; }
+  if(p.earth >= 100){ toast('这块田已经养得很肥了。'); return; }
+  if(!spendAp(1)) return;
+  var before = p.earth;
+  p.earth = Math.min(100, p.earth + REST_GAIN);
+  log('你让这块田空了一旬，翻进一层草木灰。地力 '+Math.round(before)+' → '+Math.round(p.earth)+'。','');
+  save(); render(); popPlot(idx);
+}
+
+/* ======================= 茅屋（免费互动） ======================= */
+function talkMom(){
+  if(G.flags.momDead){ toast('屋里没有人应你。'); return; }
+  G.mom = Math.min(100, G.mom + 3);
+  var lines = [
+    '母亲靠在墙上纳鞋底，针脚歪歪扭扭。她说，你别总看着我，你也该吃了。',
+    '母亲把你的手翻过来看了看，说这手不像十五岁的手。你把手收回去。',
+    '母亲问你今年冬天会不会更冷。你说不会。她就不问了。',
+    '母亲咳了两声，摆摆手说老毛病。你数了数她的呼吸，比上个月短了。'
+  ];
+  log(lines[Math.floor(Math.random()*lines.length)],'');
+  save(); render();
+}
+function brewMedicine(){
+  if(G.flags.momDead){ toast('药已经用不上了。'); return; }
+  if((G.store.mi||0) < 2){ toast('没有糙米可熬。'); return; }
+  G.store.mi -= 2;
+  G.mom = Math.min(100, G.mom + 12);
+  if(G.store.mi===0) delete G.store.mi;
+  log('你熬了一锅稠粥，撒进一把晒干的草药。母亲喝完了，说有点力气了。','g');
+  save(); render();
+}
+function puzzleStove(){
+  if(G.flags.cat){ toast('灶边只剩一团草灰。'); return; }
+  if(seasonIdx() !== 3){ toast('灶是凉的。冬天再来看看罢。'); return; }
+  G.flags.stove++;
+  if(G.flags.stove >= 5){
+    G.flags.cat = true;
+    G.pets.push({type:'cat', eggT:0, x:0, y:0});
+    log('你用火钳拨了拨灶膛的灰，灰里蜷着一团黑，抬眼看你。它没有跑。','e');
+    flash(); toast('灰里有猫');
+  }else{
+    log('你把手按在灶台上，还留着一点余温。','');
+  }
+  save(); render();
+}
+
+/* ======================= 鸡埘（免费互动） ======================= */
+function openBuyPet(){
+  if(G.pets.length >= PET_MAX){ toast('埘里挤不下了。'); return; }
+  var html = '<h2>买 畜 禽</h2><p>埘里添张嘴，院子里才有个动静。</p>';
+  for(var k in PET_TYPES){
+    var t = PET_TYPES[k];
+    if(k==='cat') continue;
+    html += '<button class="row ghost" onclick="buyPet(\''+k+'\')"><span>'+t.emoji+' '+t.name+'　'+t.cost+' 文</span>'+
+            '<em>每 '+t.eggEvery+' 旬一蛋 · 蛋 '+eggPrice()+' 文</em></button>';
+  }
+  html += '<button class="ghost" onclick="closeModal()">罢了</button>';
+  showModal(html);
+}
+function buyPet(type){
+  var t = PET_TYPES[type];
+  if(G.pets.length >= PET_MAX){ toast('埘里挤不下了。'); return; }
+  if(G.money < t.cost){ toast('铜钱不够。'); return; }
+  G.money -= t.cost;
+  G.pets.push({type:type, eggT:0, x:0, y:0});
+  log(t.name+'进了埘，先是在门口站了半天，才敢往里走。','');
+  closeModal(); save(); render();
+}
+function tickPets(){
+  for(var i=0;i<G.pets.length;i++){
+    var p = G.pets[i];
+    p.eggT++;
+    if(p.eggT >= PET_TYPES[p.type].eggEvery){
+      p.eggT = 0;
+      if(PET_TYPES[p.type].special === 'fish'){
+        G.eggs += 2;
+        log('狸猫从外头回来，嘴里叼着两条鱼，湿的。','e');
+      }else{
+        G.eggs++;
+        log(PET_TYPES[p.type].name+'下了一个蛋。','g');
+      }
+    }
+  }
+}
+function feedPet(i){
+  if((G.store.qing||0) < 1 && (G.store.mi||0) < 1){ toast('没有能喂的。'); return; }
+  if((G.store.qing||0) >= 1) G.store.qing--; else G.store.mi--;
+  if(G.store.qing===0) delete G.store.qing;
+  if(G.store.mi===0) delete G.store.mi;
+  var p = G.pets[i];
+  p.eggT = Math.min(PET_TYPES[p.type].eggEvery-1, p.eggT + 4);
+  log(PET_TYPES[p.type].name+'吃得很快，抬头看你一眼，又低下头去。','');
+  save(); render();
+  var el = document.querySelectorAll('.pet')[i];
+  if(el){
+    var r = el.getBoundingClientRect();
+    floatText(r.left, r.top-8, '♥', 'plus');
+    if(MOTION) gsap.fromTo(el, { scaleY:.85 }, { scaleY:1, duration:.5, ease:'elastic.out(1,0.4)' });
+  }
+}
+
+/* ======================= 村口（免费互动） ======================= */
+function rumorBoxHtml(){
+  var h = '<div class="rumorBox"><div class="rumorHead"><span>村 口 闲 话</span><em>听来的，未必作准</em></div>';
+  if(!G.rumors.length){
+    h += '<div class="empty">还没听见什么。去村里走一走，或在树下坐一会儿。</div>';
+  }else{
+    for(var i=0;i<G.rumors.length;i++){
+      h += '<p><time>'+G.rumors[i].d+'</time>'+G.rumors[i].m+'</p>';
+    }
+  }
+  return h + '</div>';
+}
+function askNews(){
+  var pool = [
+    '晒谷场上有人说，县里采药堂又抬高了收草的价，说是南边出了事。',
+    '哑伯蹲在门槛上比了个手势——三根手指，往下压。你猜是"还要跌"。',
+    '有货郎说，青丹门今年开山门，只要交得出三枚下品灵石，什么人都收。',
+    '张家的老二进城三个月没回来。他娘天天在村口望。',
+    '西头的水井见了底。老人说，是地脉挪了位置。',
+    '挑担的说，灵草要趁露水未干时割，日头一晒，气就散了。',
+    '有人在县衙后墙看见一张告示，说今年秋税按田亩加征，字被雨糊了一半。'
+  ];
+  if(G.mom < 50) pool.push('王婶拦住你，塞过来一包干草，说这是偏方，别外传。');
+  if(G.soil >= 3) pool.push('哑伯看了你半天，忽然指了指地，又指了指天。你没懂，他就走了。');
+  if(G.stage >= 2) pool.push('村东头的老人说，近来夜里有蓝光落在你家井口，怕是招了不干净的东西。');
+  var last = G.rumors[0] && G.rumors[0].m, line = last;
+  for(var guard=0; line===last && guard<8; guard++) line = pool[Math.floor(Math.random()*pool.length)];
+  G.rumors.unshift({m:line, d:G.month+'月'+['上','中','下'][G.xun]+'旬'});
+  if(G.rumors.length>6) G.rumors.pop();
+  log(line,'');
+  save(); render();
+}
+function puzzleTree(){
+  if(G.flags.jade){ toast('老槐树什么都不肯再给了。'); return; }
+  G.flags.tree++;
+  if(G.flags.tree >= 7){
+    G.flags.jade = true;
+    flash();
+    log('树洞里滚出半块玉。断口很新，像是最近才碎的。','e');
+    showModal('<h2>半 块 玉</h2><p>你从树洞里摸出半块玉。断口很新，边上还带着一点温度。</p>'+
+      '<p class="q">背面刻着一个「承」字。</p>'+
+      '<p>你看了很久，才想起这是父亲的名字。</p>'+
+      '<button onclick="closeModal()">收进袖子里</button>');
+    toast('半块碎玉');
+  }else{
+    log('你用指节敲了敲树干，声音空空的，像敲在一口倒扣的缸上。','');
+    save(); render();
+  }
+}
+function puzzleWell(){
+  G.flags.well++;
+  if(G.flags.well < 10){
+    if(G.flags.well === 5) log('井底的水声停了半拍。','z');
+    return;
+  }
+  if(G.flags.eye){ toast('井水很静。'); return; }
+  G.flags.eye = true;
+  boltFlash(); flash();
+  G.life += 10*DAYS_PER_YEAR;
+  log('灰雾分开了一瞬。井底有只眼睛，也在看你。','e');
+  log('然后它闭上。你手上那几块田，平白肥了一层。阳寿添了十年。','z');
+  G.plots.forEach(function(p){ if(p.state!=='荒') p.earth = Math.min(100, p.earth+20); });
+  toast('井底有眼');
+  save(); render();
+}
+
+/* ======================= 竹岐县 ======================= */
+function doSell(){
+  var sum=0, parts=[];
+  for(var k in G.store){
+    if(k==='ling') continue;
+    var n=G.store[k];
+    if(n>0){ sum += n*cropPrice(k); parts.push(CROPS[k].name+'×'+n); }
+  }
+  if(G.eggs>0){ sum += G.eggs*eggPrice(); parts.push('蛋×'+G.eggs); }
+  if(sum===0){ toast('背篓是空的。'); return; }
+  if(!spendAp(1)) return;
+  for(var k2 in G.store){ if(k2!=='ling') delete G.store[k2]; }
+  G.eggs = 0;
+  G.money += sum;
+  log('你在县城的摊子上蹲了半日，把'+parts.join('、')+'换成'+sum+'文铜钱。回灵草没舍得卖。','y');
+  save(); render();
+  if(MOTION){
+    var chip = document.getElementById('chMoney');
+    if(chip){ var r=chip.getBoundingClientRect(); floatText(r.left, r.top-8, '+'+sum, 'plus'); }
+  }
+}
+function buyAsh(idx){
+  if(G.money < ASH_PRICE){ toast('铜钱不够，八文也拿不出。'); return; }
+  if(!spendAp(1)) return;
+  G.money -= ASH_PRICE;
+  var p = G.plots[idx];
+  p.earth = Math.min(100, p.earth + ASH_GAIN);
+  log('你在县城买了一担草木灰，挑回来撒进'+['甲','乙','丙','丁','戊','己','庚','辛','壬'][idx]+'田。地力 '+Math.round(p.earth)+'。','');
+  save(); render(); popPlot(idx);
+}
+function refineStone(){
+  if((G.store.ling||0) < LING_PER_STONE){ toast('回灵草不够，要四株。'); return; }
+  G.store.ling -= LING_PER_STONE;
+  if(G.store.ling<=0) delete G.store.ling;
+  G.stone++;
+  log('丹房的老者接过四株回灵草，看也不看，丢进炉里。半晌推出一枚下品灵石，青灰色，还有余温。','z');
+  flash();
+  save(); render();
+}
+
+/* ======================= 紫府 ======================= */
+function consumeFeed(need){
+  var order = [];
+  for(var k in G.store) if(k!=='ling') order.push(k);
+  order.sort(function(a,b){ return CROPS[a].price - CROPS[b].price; });
+  for(var i=0;i<order.length && need>0;i++){
+    var kk = order[i], take = Math.min(G.store[kk]||0, need);
+    G.store[kk] -= take; need -= take;
+    if(G.store[kk]===0) delete G.store[kk];
+  }
+  return need===0;
+}
+function soilCost(){
+  var crop = 3 + Math.floor(G.soil/3) - (hasTrait('t_soil')?1:0);
+  var money = 10 + G.soil*5;
+  if(hasTrait('t_jade')) money = Math.ceil(money*0.9);
+  return { crop:Math.max(2,crop), money:money };
+}
+function zfShort(){
+  var nx = STAGES[G.stage+1];
+  if(!nx) return '五境已满。';
+  if(canBreak()) return '<b>资粮已备</b>，可往道途突破。';
+  if(G.soil < nx.soil) return '眼下：还差 <b>'+(nx.soil-G.soil)+' 寸活土</b>。';
+  if(G.stone < nx.stone) return '眼下：还差 <b>'+(nx.stone-G.stone)+' 枚灵石</b>。';
+  if(G.money < nx.money) return '眼下：还差 <b>'+(nx.money-G.money)+' 文铜钱</b>。';
+  return '资粮还差一线，慢慢来。';
+}
+function zfNextText(){
+  var nx = STAGES[G.stage+1];
+  if(!nx) return '五境已满。井底那方土已经全活了，剩下的路，不在这一口井里。';
+  if(canBreak()) return '<b>资粮已备。</b>回右侧道途，按下「突破 · '+nx.name+'」。';
+  if(G.soil < nx.soil){
+    var c = soilCost();
+    return '你现在最缺的是<b>活土</b>：还差 '+(nx.soil-G.soil)+' 寸。养下一寸要 '+c.crop+' 份口粮与 '+c.money+' 文；口粮不够，就先种一茬青菜，别急着全卖掉。';
+  }
+  if(G.stone < nx.stone){
+    return '你现在最缺的是<b>灵石</b>：还差 '+(nx.stone-G.stone)+' 枚。地力满 70 的田可种回灵草，'+LING_PER_STONE+' 株到竹岐县丹房换 1 枚；地力不够就先歇田。';
+  }
+  if(G.money < nx.money) return '你现在最缺的是<b>铜钱</b>：还差 '+(nx.money-G.money)+' 文。青菜熟得快，糙米价高；县城采药堂可一次卖清背篓。';
+  return '资粮还未齐。按上面的缺口，一样一样补。';
+}
+function showZfGuide(){
+  var nx = STAGES[G.stage+1];
+  showModal('<h2>紫 府 要 诀</h2>'+
+    '<div class="guideNow">'+zfNextText()+'</div>'+
+    '<div class="calc">'+
+      '<b>养土</b>　每养一寸，紫府深一分，也是突破的根基。耗口粮与铜钱，占 2 点余力。<br>'+
+      '<b>催熟</b>　成熟前可借紫府催长，不费余力；借来一旬，须以三十旬阳寿相偿。<br>'+
+      '<b>余力</b>　力农每旬 3 点；每突破一境，每旬多得 1 点。'+ (nx?('眼下 '+apMax()+' 点，'+nx.name+'后 '+(AP_MAX+G.stage+1)+' 点。'):'') +
+    '</div>'+
+    '<p class="q">井中无岁月。借来的时辰，终要从阳寿里一寸寸割还。</p>'+
+    '<button onclick="closeModal()">记住了</button>');
+}
+function doSoil(){
+  if(G.soil >= ZF_MAX){ toast('井已满。'); return; }
+  var c = soilCost();
+  if(G.money < c.money){ toast('铜钱不够，需 '+c.money+' 文。'); return; }
+  if(feedTotal() < c.crop){ toast('口粮不够，需 '+c.crop+' 份。'); return; }
+  if(!spendAp(2)) return;
+  G.money -= c.money;
+  consumeFeed(c.crop);
+  G.soil++;
+  log('你把 '+c.crop+' 份口粮埋进井底。土松开一寸，颜色深了一分。','z');
+  save(); render(); lightCell(G.soil-1);
+}
+function lightCell(i){
+  if(!MOTION) return;
+  var el = document.querySelectorAll('.cells i')[i];
+  if(el) gsap.fromTo(el, { scale:.3, opacity:.2 }, { scale:1, opacity:1, duration:.7, ease:'elastic.out(1,0.45)' });
+  gsap.fromTo('#well', { filter:'brightness(1)' }, { filter:'brightness(1.55)', duration:.16, yoyo:true, repeat:1 });
+}
+function boltFlash(){
+  if(!MOTION) return;
+  var b = document.getElementById('bolt');
+  gsap.fromTo(b, { opacity:0, x:-3 }, { opacity:1, duration:.06, repeat:3, yoyo:true,
+    onComplete:function(){ gsap.set(b, { opacity:0 }); } });
+}
+function doHasten(idx){
+  var p = G.plots[idx];
+  if(p.state!=='种' || !p.crop) return;
+  var c = CROPS[p.crop], left = c.grow - p.grow;
+  if(left<=0){ toast('已经熟了。'); return; }
+  if(G.soil < 1){ toast('紫府还是死土。先养一寸。'); return; }
+  if(G.cd > 0){ toast('紫府还在休养，'+G.cd+' 旬。'); return; }
+  var cost = Math.round(left*ZF_MULT*DAYS_PER_XUN*(hasTrait('t_eye')?0.9:1));
+  if(G.life <= cost){ toast('阳寿不够了。'); return; }
+  showModal('<h2>催 熟</h2><p>你把手按在土上。井底传来一声很轻的吞咽。</p>'+
+    '<div class="calc">'+c.name+' 还差 <b>'+left+'</b> 旬<br>紫府借时：'+left+' × 30 = <b>'+(left*ZF_MULT)+'</b> 旬<br>'+
+    '折成日：'+(left*ZF_MULT)+' × 10 = <b>'+(left*ZF_MULT*DAYS_PER_XUN)+'</b> 日 ≈ <b>'+Math.round(cost/DAYS_PER_YEAR*10)/10+' 年</b></div>'+
+    '<p class="q">不占外界时辰，也不耗这一旬的余力。只是借来的光阴，终要记在阳寿账上。</p>'+
+    '<p>你现在还剩 '+lifeYears()+' 年。</p>'+
+    '<button onclick="confirmHasten('+idx+','+cost+')">划走这 '+Math.round(cost/DAYS_PER_YEAR*10)/10+' 年</button>'+
+    '<button class="ghost" onclick="closeModal()">收手</button>');
+}
+function confirmHasten(idx, cost){
+  var p = G.plots[idx];
+  G.life -= cost; p.grow = CROPS[p.crop].grow; G.cd = hasTrait('t_cat')?1:2;
+  log('土里那株草一夜长成了。你摸了摸鬓角，好像白了一根。','z');
+  closeModal();
+  if(MOTION){
+    boltFlash(); flash(); shake(document.querySelector('.app'), 6);
+    var chip = document.getElementById('chLife');
+    if(chip){ var r = chip.getBoundingClientRect(); floatText(r.left, r.top-6, '-'+(Math.round(cost/DAYS_PER_YEAR*10)/10)+' 年', 'minus'); }
+  }
+  if(G.life<=0){ ending('阳寿被一寸一寸划完了。'); return; }
+  save(); render();
+}
+
+/* ======================= 突破 ======================= */
+function canBreak(){
+  var n = STAGES[G.stage+1];
+  if(!n) return false;
+  return G.stone >= n.stone && G.money >= n.money && G.soil >= n.soil;
+}
+function doBreak(){
+  var n = STAGES[G.stage+1];
+  if(!n) return;
+  if(!canBreak()){ toast('资粮未备。'); return; }
+  G.stone -= n.stone;
+  G.money -= n.money;
+  var gain = (n.life - STAGES[G.stage].life)*DAYS_PER_YEAR;
+  G.stage++; G.life += gain; G.ap = apMax();
+  log('你把积下的灵石一枚枚按进识海。石皮裂开，气涌上来，冲得你眼前发白。'+n.name+'。','z');
+  save(); render(); breakthroughFx(n.name);
+  if(G.stage >= 4) setTimeout(showVictory, 1200);
+}
+function showVictory(){
+  if(!G || G.over || G.stage < 4) return;
+  log('丹成。井底的死土全活了。你站在田埂上，第一次觉得这三十年是自己的。','z');
+  save(); render();
+  showModal('<h2>结 丹</h2>'+
+    '<p>'+G.year+' 年，柳溪村的春天来得比往年早。你在井边坐了一夜，天亮时，井壁最后一圈刻度也亮了。</p>'+
+    '<p>铜钱 '+G.money+' 文，灵石 '+G.stone+' 枚，收成 '+G.harvest+' 份；紫府三十寸活土，埘里还有 '+G.pets.length+' 只活物。</p>'+
+    '<p class="q">三十年前，你只想让一家人熬过冬天。如今你站在这里，路才刚开了一个头。</p>'+
+    '<button onclick="closeModal()">再住些年</button>'+
+    '<button class="ghost" onclick="restart()">另开一世</button>');
+}
+function breakthroughFx(name){
+  flash();
+  if(!MOTION){ toast('突破 · '+name); return; }
+  shake(document.querySelector('.app'), 10);
+  var d = document.createElement('div');
+  d.textContent = name;
+  d.style.cssText = 'position:fixed;left:50%;top:42%;transform:translate(-50%,-50%);font-family:KaiTi,serif;'+
+    'font-size:64px;letter-spacing:16px;color:#6a5ac4;text-shadow:0 0 28px rgba(150,120,255,.95),0 0 70px rgba(150,120,255,.5);'+
+    'z-index:96;pointer-events:none';
+  document.getElementById('fxLayer').appendChild(d);
+  gsap.timeline({ onComplete:function(){ d.remove(); } })
+    .fromTo(d, { scale:.4, opacity:0 }, { scale:1.12, opacity:1, duration:.5, ease:ME.back })
+    .to(d, { scale:1.5, opacity:0, duration:.9, ease:'power2.in' }, '+=0.35');
+  gsap.fromTo('.zfbox', { boxShadow:'inset 0 0 0 rgba(140,110,255,0)' },
+    { boxShadow:'inset 0 0 60px rgba(140,110,255,.85)', duration:.35, yoyo:true, repeat:1 });
+}
+
+/* ======================= 结局 ======================= */
+function ending(reason){
+  G.over = true; save();
+  showModal('<h2>终</h2><p>'+reason+'</p>'+
+    '<p>你在柳溪村过了 '+G.year+' 年 '+G.month+' 月。攒下铜钱 '+G.money+' 文，灵石 '+G.stone+' 枚。'+
+    '收成 '+G.harvest+' 份，修为停在<b>'+stageName()+'</b>，紫府养熟 '+G.soil+' 寸，埘里养着 '+G.pets.length+' 只活物。</p>'+
+    (G.flags.jade?'<p class="q">那半块玉一直在你袖子里，凉着。</p>':'')+
+    '<p class="q">井还在那里。它只是又饿了。</p>'+
+    '<button onclick="restart()">再来一世</button>');
+}
+function restart(){ clearSave(); closeModal(); location.reload(); }
+function confirmReset(){
+  showModal('<h2>重 开</h2><p>田、钱、紫府、鸡鸭，都要归零。想清楚了？</p>'+
+    '<button onclick="restart()">重来</button><button class="ghost" onclick="closeModal()">罢了</button>');
+}
+
+/* ======================= 渲染 ======================= */
+function render(){
+  if(!G) return;
+  applySeason(true);
+  var s = SEASONS[seasonIdx()];
+  var dots='';
+  for(var d=0;d<apMax();d++) dots += '<i class="'+(d<G.ap?'on':'')+'">●</i>';
+  var low = G.life < STAGES[G.stage].life*DAYS_PER_YEAR*0.2;
+
+  document.getElementById('chips').innerHTML =
+    '<div class="chip">'+ganzhi(G.year)+'年　<b>'+G.month+'</b>月<b>'+['上','中','下'][G.xun]+'</b>旬　'+s.name+'</div>'+
+    '<div class="chip ap">余力　<span class="dots">'+dots+'</span></div>'+
+    '<div class="chip" id="chMoney">铜钱 <b id="numMoney">'+G.money+'</b> 文</div>'+
+    '<div class="chip jade" id="chStone">灵石 <b id="numStone">'+G.stone+'</b> 枚</div>'+
+    '<div class="chip danger'+(low?' low':'')+'" id="chLife">阳寿 <b id="numLife">'+lifeYears()+'</b> 年</div>'+
+    '<div class="chip">'+stageName()+'</div>'+
+    '<div class="chip zf">紫府 <b id="numSoil">'+G.soil+'</b>/'+ZF_MAX+'</div>';
+
+  if(PREV.money!==undefined && PREV.money!==G.money) countTo(document.getElementById('numMoney'), PREV.money, G.money);
+  if(PREV.stone!==undefined && PREV.stone!==G.stone) countTo(document.getElementById('numStone'), PREV.stone, G.stone);
+  if(PREV.life!==undefined && Math.abs(PREV.life-lifeYears())>0.05) countTo(document.getElementById('numLife'), PREV.life, lifeYears());
+  if(PREV.soil!==undefined && PREV.soil!==G.soil) countTo(document.getElementById('numSoil'), PREV.soil, G.soil);
+
+  var sh='';
+  for(var k=0;k<ZF_MAX;k++) sh += '<i class="'+(k<G.soil?'on':'')+'"></i>';
+  document.getElementById('scale').innerHTML = sh;
+  document.getElementById('soilNum').textContent = G.soil;
+  document.getElementById('cdNum').textContent = G.cd;
+  document.getElementById('zfHint').textContent = G.soil>=ZF_MAX ? '井已满' : '';
+  var zg = document.getElementById('zfGoal');
+  if(zg) zg.innerHTML = zfShort();
+  var w = document.getElementById('well');
+  if(w) w.style.background =
+    'radial-gradient(120% 90% at 50% 0%,hsl('+(250-80*(G.soil/ZF_MAX))+', '+(18+22*(G.soil/ZF_MAX))+'%, '+(15+8*(G.soil/ZF_MAX))+'%) 0%,'+
+    'hsl('+(250-80*(G.soil/ZF_MAX))+', 22%, '+(8+4*(G.soil/ZF_MAX))+'%) 55%, #0a0814 100%)';
+
+  var sc = soilCost(), btn = document.getElementById('btnSoil');
+  btn.disabled = !(G.soil<ZF_MAX && G.money>=sc.money && feedTotal()>=sc.crop && G.ap>=2);
+  btn.textContent = G.soil>=ZF_MAX ? '井 已 满'
+    : ('养第 '+(G.soil+1)+' 寸　口粮 '+Math.min(feedTotal(),sc.crop)+'/'+sc.crop+' · '+sc.money+' 文 · 2 力');
+
+  var nx = STAGES[G.stage+1];
+  document.getElementById('stageNow').textContent = stageName()+(nx?'　→ '+nx.name:'　· 已至极');
+  var rh='';
+  if(nx){
+    rh += '<div class="req '+(G.stone>=nx.stone?'ok':'no')+'"><span>灵石</span><b>'+G.stone+' / '+nx.stone+'</b></div>';
+    if(nx.money>0) rh += '<div class="req '+(G.money>=nx.money?'ok':'no')+'"><span>铜钱</span><b>'+G.money+' / '+nx.money+'</b></div>';
+    if(nx.soil>0) rh += '<div class="req '+(G.soil>=nx.soil?'ok':'no')+'"><span>紫府</span><b>'+G.soil+' / '+nx.soil+' 寸</b></div>';
+    rh += '<div class="req"><span>寿元</span><b>'+STAGES[G.stage].life+' → '+nx.life+' 年</b></div>';
+    rh += '<div class="req ok"><span>每旬余力</span><b>'+apMax()+' → '+(apMax()+1)+'</b></div>';
+  }else{
+    rh = '<div class="req"><span>五境已满</span><b>余下的路自己走</b></div>';
+  }
+  document.getElementById('reqs').innerHTML = rh;
+  var bb = document.getElementById('btnBreak');
+  bb.disabled = !canBreak();
+  bb.textContent = nx ? ('突 破 · '+nx.name) : '已 至 结 丹';
+
+  var hasWaste=false;
+  for(var ww=0;ww<G.plots.length;ww++) if(G.plots[ww].state==='荒') hasWaste=true;
+  var ah='';
+  for(var a=0;a<ACTIONS.length;a++){
+    var ac=ACTIONS[a], dis=false;
+    if(ac.id==='open') dis = ((!hasWaste && G.plots.length>=9) || G.money<openCost() || G.ap<2);
+    if(ac.id==='harv') dis = (G.ap<1);
+    var acSub = ac.id==='open' ? ('2 力 · '+openCost()+' 文') : ac.sub;
+    ah += '<button class="act'+(ac.pass?' pass':'')+'" '+(dis?'disabled':'')+' onclick="ACT(\''+ac.id+'\')">'+
+          ac.name+'<span>'+acSub+'</span></button>';
+  }
+  document.getElementById('acts').innerHTML = ah;
+
+  var lh='';
+  for(var l=0;l<G.logs.length;l++){
+    var L=G.logs[l];
+    lh += '<p><span class="t">'+L.d+'</span><span class="'+L.c+'">'+L.m+'</span></p>';
+  }
+  document.getElementById('log').innerHTML = lh;
+
+  PREV = { money:G.money, stone:G.stone, life:lifeYears(), soil:G.soil };
+  renderNav(); renderScene();
+}
+
+function renderNav(){
+  var h='';
+  for(var i=0;i<SCENES.length;i++){
+    var s=SCENES[i];
+    h += '<button class="'+(SCENE===s.id?'on':'')+'" onclick="goScene(\''+s.id+'\')">'+
+         icon(s.id)+'<span>'+s.name+'</span></button>';
+  }
+  document.getElementById('nav').innerHTML = h;
+}
+
+/* ======================= 场景 ======================= */
+function seasonWord(i){ return ['春','夏','秋','冬'][i]; }
+function vnBlock(){ return ''; }
+
+function renderScene(){
+  var title='', sub='', body='';
+  var names=['甲','乙','丙','丁','戊','己','庚','辛','壬'];
+  var si = seasonIdx();
+
+  /* ---------- 茅屋 ---------- */
+  if(SCENE==='hut'){
+    title='茅屋'; sub = G.flags.momDead ? '屋里少了一个人' : '柳氏卧病';
+    var openers = [
+      '檐下的冰化了。水一滴一滴落在石阶上，砸出小坑，一声，又一声。',
+      '屋里闷。妹妹蹲在门槛上，看蚂蚁搬一只死蝉，看了半个时辰。',
+      '日头短了。你把晒干的草扎成捆，码在墙角，够烧到入冬。',
+      '风从墙缝里钻进来，绕了半圈，又走了。母亲把被子拉到下巴，还是咳。'
+    ];
+    var momTxt = G.flags.momDead ? '已经不在了' : (G.mom<30?'咳得厉害，夜里睡不安稳':(G.mom<60?'时好时坏，能坐起来':'精神了些，能下地走两步'));
+    body =
+      '<div class="vn">'+
+        '<p>'+openers[si]+'</p>'+
+        '<p>'+(G.flags.momDead
+          ? '屋里空着一张小榻。被褥叠得整齐，谁也没去动。'
+          : '母亲靠在墙上纳鞋底，针脚歪歪扭扭。她不时抬头看你一眼，又低下去。')+'</p>'+
+      '</div>'+
+      '<div class="famrow">'+
+        '<div class="fcard">'+portrait('mother',ageNow(38))+'<div class="fn">柳氏 · 母亲　'+ageNow(38)+'岁</div>'+
+          '<div class="fbar"><i style="width:'+G.mom+'%"></i></div><em>'+momTxt+'</em></div>'+
+        '<div class="fcard">'+portrait('brother',ageNow(12))+'<div class="fn">苏禾 · 小弟　'+ageNow(12)+'岁</div>'+
+          '<div class="fbar"><i style="width:'+Math.min(100,30+G.total*1.1)+'%"></i></div><em>拿锄头在院里比划，说是剑法</em></div>'+
+        '<div class="fcard">'+portrait('sister',ageNow(10))+'<div class="fn">苏苗 · 小妹　'+ageNow(10)+'岁</div>'+
+          '<div class="fbar"><i style="width:'+Math.min(100,50+G.total*0.6)+'%"></i></div><em>总蹲在草边，说它们在说话</em></div>'+
+      '</div>'+
+      '<div class="sc-acts">'+
+        '<button class="free" '+(G.flags.momDead?'disabled':'')+' onclick="talkMom()">陪母亲坐一会儿</button>'+
+        '<button class="free" '+(G.flags.momDead?'disabled':'')+' onclick="brewMedicine()">熬一锅药粥　耗 2 份糙米</button>'+
+        '<button class="quiet" onclick="puzzleStove()">看看灶膛</button>'+
+      '</div>';
+  }
+
+  /* ---------- 灵田 ---------- */
+  else if(SCENE==='field'){
+    title='灵田';
+    var farmed=0, ph='';
+    for(var i=0;i<G.plots.length;i++){
+      var p=G.plots[i];
+      if(p.state!=='荒') farmed++;
+      if(p.state==='荒'){
+        ph += '<div class="plot waste" data-i="'+i+'"><span class="no">'+names[i]+'</span>'+
+              '<div class="nm">荒地</div><div class="st">碎石还没捡净</div><div style="flex:1"></div></div>';
+        continue;
+      }
+      if(p.state==='田'){
+        ph += '<div class="plot" data-i="'+i+'"><span class="no">'+names[i]+'</span>'+
+              '<div class="nm">空田</div><div class="bar earth"><i style="width:'+p.earth+'%"></i></div>'+
+              '<div class="st">地力 '+Math.round(p.earth)+'</div><div style="flex:1"></div>'+
+              '<div class="rw"><button onclick="openSeed('+i+')">下种</button>'+
+              '<button onclick="doRest('+i+')" '+(p.earth>=100?'disabled':'')+'>歇田</button></div></div>';
+        continue;
+      }
+      var c=CROPS[p.crop], pct=Math.round(p.grow/c.grow*100), done=p.grow>=c.grow;
+      ph += '<div class="plot" data-i="'+i+'"><span class="no">'+names[i]+'</span>'+
+            '<div class="nm">'+c.name+'</div>'+
+            '<div class="st">'+(done?('可收 '+realYield(p.crop,p.earth)+' 份'):(p.grow+' / '+c.grow+' 旬'))+'</div>'+
+            '<div class="bar"><i style="width:'+pct+'%"></i></div>'+
+            '<div class="bar earth"><i style="width:'+p.earth+'%"></i></div>'+
+            '<div style="flex:1"></div>'+
+            (done?'<button class="go" onclick="doHarvest('+i+')">收</button>'
+                 :'<button class="zi" onclick="doHasten('+i+')">催熟</button>')+'</div>';
+    }
+    var fw = [
+      '田埂上的草冒了头，你顺手掐掉，指甲缝里留了一道绿。',
+      '日头毒，土面裂开细纹。你蹲下去，把裂缝抹平。',
+      '风过处，穗子压下来又抬起来。你数了数，比上月密了些。',
+      '霜把土面冻硬了。锄头下去，弹回来，震得虎口发麻。'
+    ];
+    body = '<div class="vn"><p>'+fw[si]+'</p><p>三块地，一块一块种，一块一块收。地是认人的。</p></div>'+
+           '<div class="yard"><div class="plots">'+ph+'</div></div>';
+    sub = '开田 '+farmed+' 块 · 每旬 '+apMax()+' 力';
+  }
+
+  /* ---------- 鸡埘 ---------- */
+  else if(SCENE==='pen'){
+    title='鸡埘';
+    var list='';
+    if(!G.pets.length){
+      list = '<div class="vn" style="border:none;padding:0;margin-bottom:6px"><p>埘是空的。风穿过去，草屑在地上打了个转。买一只罢，院子里总得有个动静。</p></div>';
+    }else{
+      for(var j=0;j<G.pets.length;j++){
+        var pt=G.pets[j], tp=PET_TYPES[pt.type];
+        var prog = Math.round(pt.eggT/tp.eggEvery*100);
+        list += '<div class="fcard"><span style="font-size:24px">'+tp.emoji+'</span><div class="fn">'+tp.name+'</div>'+
+                '<div class="fbar"><i style="width:'+prog+'%"></i></div>'+
+                '<em>'+(tp.special==='fish'?'出猎 '+pt.eggT+' / '+tp.eggEvery+' 旬':('产蛋 '+pt.eggT+' / '+tp.eggEvery+' 旬'))+'</em>'+
+                '<div style="margin-top:6px"><button style="width:100%;font-family:inherit;font-size:11.5px;'+
+                'padding:4px;border-radius:2px;border:1px solid #c2ccb0;background:#eef1e6;color:#4c5a3c;cursor:pointer" '+
+                'onclick="feedPet('+j+')">添食　耗 1 份</button></div></div>';
+      }
+    }
+    body = '<div class="vn"><p>'+
+      ['埘里的鸡一早就闹。你撒了把谷，它们扑过来，踩得满地脚印。',
+       '午后日头大，鸭子都缩在墙根。只有山羊还站着，慢慢地嚼。',
+       '草籽熟了，鸡往坡上跑得远。你数了两遍，怕少一只。',
+       '天冷，它们挤成一团。你多铺了一层干草，又添了半瓢水。'][si]+
+      '</p></div>'+
+      '<div class="famrow">'+list+'</div>'+
+      '<div class="sc-acts"><button class="hot" '+(G.pets.length>=PET_MAX?'disabled':'')+' onclick="openBuyPet()">买畜禽　24 文起</button>'+
+      '<button class="quiet" onclick="toast(\'存蛋 '+G.eggs+' 枚，去县城卖\')">存蛋 '+G.eggs+'</button></div>';
+    sub = '牲畜 '+G.pets.length+' / '+PET_MAX+' · 蛋 '+G.eggs;
+  }
+
+  /* ---------- 村口 ---------- */
+  else if(SCENE==='gate'){
+    title='村口'; sub = '租期还有 '+taxLeft()+' 旬';
+    body =
+      '<div class="vn">'+
+        '<p>'+
+        ['柳溪村开春最忙。田里全是人，见面只点个头。',
+         '树底下坐满了人，谁也不说话，就听蝉。',
+         '场上晒着谷，麻雀来偷，赶了又来。',
+         '村口风大，没人出来。只有一条狗在雪里刨东西。'][si]+
+        '</p>'+
+        '<p>里正蒋三每十八旬来一趟，一块田八文，一文不能少。他从不多说一个字。</p>'+
+      '</div>'+
+      '<div class="famrow">'+
+        '<div class="fcard">'+icon('official',true)+'<div class="fn">蒋三 · 里正</div>'+
+          '<div class="fbar"><i style="width:'+Math.min(100,taxLeft()/TAX_EVERY*100)+'%"></i></div>'+
+          '<em>'+taxLeft()+' 旬后来收租 · '+taxNeed()+' 文</em></div>'+
+        '<div class="fcard">'+icon('elder',true)+'<div class="fn">哑伯</div>'+
+          '<div class="fbar"><i style="width:40%"></i></div><em>不会说话，一把年纪，看土最准</em></div>'+
+        '<div class="fcard">'+portrait('neighbor',ageNow(16))+'<div class="fn">阿禾　'+ageNow(16)+'岁</div>'+
+          '<div class="fbar"><i style="width:70%"></i></div><em>隔壁家的女儿，嘴碎，心热</em></div>'+
+      '</div>'+
+      '<div class="tree" onclick="puzzleTree()"><div class="glyph">'+icon('tree')+'</div><div class="hint">村口的老槐树</div></div>'+
+      '<div class="sc-acts"><button class="free" onclick="askNews()">听人说闲话　免费</button></div>'+
+      rumorBoxHtml();
+  }
+
+  /* ---------- 竹岐县 ---------- */
+  else if(SCENE==='county'){
+    title='竹岐县'; sub = '县城';
+    var sellSum=0, parts=[];
+    for(var k2 in G.store){ if(k2==='ling') continue; var n2=G.store[k2]; if(n2>0){ sellSum+=n2*cropPrice(k2); parts.push(CROPS[k2].name+'×'+n2);} }
+    if(G.eggs>0){ sellSum += G.eggs*eggPrice(); parts.push('蛋×'+G.eggs); }
+    var rows='';
+    for(var m=0;m<G.plots.length;m++){
+      var pp=G.plots[m];
+      if(pp.state==='荒') continue;
+      rows += '<div class="req"><span>'+names[m]+'田 · 地力 '+Math.round(pp.earth)+'</span>'+
+              '<b><button style="font-family:inherit;font-size:11px;padding:2px 9px;border-radius:2px;'+
+              'border:1px solid #d8cbb4;background:#f2ebdd;color:#54462f;cursor:pointer" '+
+              'onclick="buyAsh('+m+')" '+(pp.earth>=100?'disabled style="opacity:.35"':'')+'>施肥 '+ASH_PRICE+' 文</button></b></div>';
+    }
+    var ling = G.store.ling||0;
+    body =
+      '<div class="vn">'+
+        '<p>县城比村里热闹。药王帮的采药堂占了半条街，门口木牌上写着今日收价，一天一换，用朱笔改。</p>'+
+        '<p>街尾有一间丹房，常年关着门。有人说里头住的是个筑基不成、反把身子烧坏的老头。</p>'+
+      '</div>'+
+      '<div class="famrow">'+
+        '<div class="fcard">'+icon('market',true)+'<div class="fn">采药堂前</div>'+
+          '<div class="fbar"><i style="width:100%"></i></div>'+
+          '<em>'+(sellSum>0?('可卖 '+sellSum+' 文'):'背篓是空的')+'</em>'+
+          '<div style="margin-top:6px"><button style="width:100%;font-family:inherit;font-size:11.5px;padding:5px;'+
+          'border-radius:2px;border:1px solid #849a72;background:#849a72;color:#fff;cursor:pointer" '+
+          (sellSum>0?'':'disabled style="opacity:.35"')+' onclick="doSell()">卖　1 力</button></div></div>'+
+        '<div class="fcard">'+icon('alchemy',true)+'<div class="fn">丹房</div>'+
+          '<div class="fbar"><i style="width:'+Math.min(100,ling/LING_PER_STONE*100)+'%"></i></div>'+
+          '<em>回灵草 '+ling+' / '+LING_PER_STONE+' 株，可换一枚灵石</em>'+
+          '<div style="margin-top:6px"><button style="width:100%;font-family:inherit;font-size:11.5px;padding:5px;'+
+          'border-radius:2px;border:1px solid #7d6bc4;background:#7d6bc4;color:#fff;cursor:pointer" '+
+          (ling>=LING_PER_STONE?'':'disabled style="opacity:.35"')+' onclick="refineStone()">换灵石</button></div></div>'+
+      '</div>'+
+      '<div class="sc-acts" style="flex-direction:column;gap:4px">'+rows+'</div>';
+    sub = (parts.length ? parts.join('、') : '背篓空空')+' · 灵石 '+G.stone+' 枚';
+  }
+
+  /* ---------- 道行 ---------- */
+  else {
+    title='道行'; sub = '第 '+G.year+' 年';
+    body =
+      '<div class="vn"><p>'+
+        ['开春。你把去年攒下的东西一样样摆开，数了一遍。',
+         '入夏。日头长，活也多。你很少想以后的事。',
+         '天凉了。你算了算存粮，够不够撑到明年开春。',
+         '雪封了路。这一类日子，最适合想事情。'][si]+
+      '</p></div>'+
+      '<div class="stats">'+
+        '<div class="st"><span>修 为</span><b>'+stageName()+'</b></div>'+
+        '<div class="st"><span>阳 寿</span><b>'+lifeYears()+' / '+STAGES[G.stage].life+'</b></div>'+
+        '<div class="st"><span>紫 府</span><b>'+G.soil+' / '+ZF_MAX+' 寸</b></div>'+
+        '<div class="st"><span>铜 钱</span><b>'+G.money+'</b></div>'+
+        '<div class="st"><span>灵 石</span><b>'+G.stone+'</b></div>'+
+        '<div class="st"><span>累计收成</span><b>'+G.harvest+'</b></div>'+
+        '<div class="st"><span>田 亩</span><b>'+G.plots.length+' 块</b></div>'+
+        '<div class="st"><span>牲 畜</span><b>'+G.pets.length+' 只</b></div>'+
+      '</div>'+
+      '<div class="heroCard">'+
+        '<div><div class="hn">苏婉 · '+heroAge()+' 岁</div><div class="hm">武国平州竹岐县 · 柳溪村</div></div>'+
+        '<div class="hs"><b>'+stageName()+'</b><br>每旬余力 '+apMax()+' 点</div>'+
+      '</div>'+
+      (function(){
+        var got=0, cards='';
+        for(var ti=0;ti<TRAITS.length;ti++){
+          var tr=TRAITS[ti], on=tr.check(); if(on) got++;
+          cards += '<div class="trait'+(on?' on':'')+'"><b>'+tr.name+'</b><em>'+
+                   (on?'已得':'未得 · '+tr.req)+'<br>'+tr.gain+'</em></div>';
+        }
+        return '<div class="traitHead"><span>词 条</span><em>已得 '+got+' / '+TRAITS.length+'</em></div>'+
+               '<div class="traits">'+cards+'</div>';
+      })()+
+      '<div class="vn" style="margin-top:12px;border:none;padding:0">'+
+        '<p class="q" style="color:#7a4f30">'+
+          (G.flags.jade?'袖子里那半块玉一直凉着。背面刻着「承」，是父亲的名字。':'还有些事没弄明白。')+
+        '</p>'+
+      '</div>';
+  }
+
+  document.getElementById('sceneTitle').textContent = title;
+  document.getElementById('sceneSub').textContent = sub;
+  document.getElementById('sceneBody').innerHTML = body;
+  mountPets();
+}
+
+/* ======================= 家畜 ======================= */
+var PET_NODES = [];
+var PET_GEN = 0;
+var PET_SIGNATURE = null;
+
+function mountPets(){
+  var host = document.getElementById('petLayer');
+  if(!host || !G) return;
+  var signature = G.pets.map(function(p){ return p.type; }).join('|');
+  if(signature === PET_SIGNATURE) return;  // 切换场景、过旬时不打断行走
+  PET_SIGNATURE = signature;
+  PET_GEN++;
+  for(var i=0;i<PET_NODES.length;i++){
+    var old = PET_NODES[i];
+    if(old){
+      if(MOTION){ gsap.killTweensOf(old); if(old._body) gsap.killTweensOf(old._body); }
+      if(old.parentNode) old.parentNode.removeChild(old);
+    }
+  }
+  PET_NODES = [];
+  if(!G.pets.length) return;
+
+  for(var j=0;j<G.pets.length;j++){
+    (function(idx, container){
+      var d = document.createElement('div');
+      d.className = 'pet';
+      d.title = '点一点';
+      d.innerHTML = '<span class="shadow"></span>'+
+                    '<span class="body">'+PET_TYPES[G.pets[idx].type].emoji+'</span>'+
+                    '<span class="bub"></span>';
+      d._body = d.querySelector('.body');
+      d.addEventListener('click', function(){ petClick(idx); });
+      container.appendChild(d);
+      PET_NODES[idx] = d;
+      startPet(idx);
+    })(j, host);
+  }
+}
+
+function petBounds(host){
+  host = host || (PET_NODES[0] && PET_NODES[0].parentNode);
+  if(!host) return {w:300,h:160};
+  return { w: Math.max(60, host.clientWidth - 40), h: Math.max(40, host.clientHeight - 44) };
+}
+
+function startPet(i){
+  var el = PET_NODES[i];
+  if(!el) return;
+  var b = petBounds(el.parentNode);
+  var sx = 8 + Math.random()*Math.max(10, b.w-8);
+  var sy = b.h*0.30 + Math.random()*Math.max(10, b.h*0.55);
+  el._x = sx; el._y = sy;
+  if(MOTION){
+    gsap.set(el, { x:sx, y:sy });
+    gsap.to(el._body, { y:-2, duration:.5+Math.random()*.4, yoyo:true, repeat:-1, ease:'sine.inOut' });
+  }else{
+    el.style.transform = 'translate('+sx+'px,'+sy+'px)';
+  }
+  walkStep(i, PET_GEN);
+}
+
+function walkStep(i, gen){
+  var el = PET_NODES[i];
+  if(!el || gen !== PET_GEN || !MOTION || !G || G.over) return;
+  var b = petBounds(el.parentNode);
+  var tx = 8 + Math.random()*Math.max(10, b.w-8);
+  var ty = b.h*0.26 + Math.random()*Math.max(10, b.h*0.62);
+  var dx = tx - el._x, dy = ty - el._y;
+  var dist = Math.sqrt(dx*dx + dy*dy);
+  if(dist < 26){ setTimeout(function(){ walkStep(i, gen); }, 60); return; }
+  var dir = dx > 0 ? 1 : -1;
+  el._x = tx; el._y = ty;
+  var spd = [1.0, 0.85, 1.0, 1.5][seasonIdx()];
+  var base = (2.4 + Math.random()*2.2) * spd;
+  gsap.to(el._body, { scaleX:dir, duration:.18, ease:'power1.out' });
+  gsap.to(el, { y:ty, duration: base*(0.6+Math.random()*0.3), ease:'sine.inOut' });
+  gsap.to(el, { x:tx, duration: base, ease:'sine.inOut', onComplete:function(){ walkStep(i, gen); } });
+}
+
+function petClick(i){
+  var el = PET_NODES[i], p = G.pets[i];
+  if(!el || !p) return;
+  var lines = {
+    chicken:['咕——','抖了抖翅膀。','在土里啄了一下，什么也没有。'],
+    duck:['嘎。','晃了晃屁股。','把头埋进翅膀里，不理你。'],
+    goat:['咩——','用角顶了顶篱笆。','嚼着一根草，慢慢看你。'],
+    cat:['喵。','蹭了蹭你的裤脚。','尾巴尖抖了一下。','跳上墙头，又跳下来。']
+  };
+  var arr = lines[p.type] || ['……'];
+  var bub = el.querySelector('.bub');
+  if(bub){
+    bub.textContent = arr[Math.floor(Math.random()*arr.length)];
+    if(MOTION){
+      gsap.killTweensOf(bub);
+      gsap.fromTo(bub, { opacity:0, y:4 }, { opacity:1, y:0, duration:.2,
+        onComplete:function(){ gsap.to(bub, { opacity:0, y:-8, duration:.4, delay:1.3 }); } });
+    }
+  }
+  if(MOTION) gsap.fromTo(el, { scaleY:.82 }, { scaleY:1, duration:.5, ease:'elastic.out(1,0.4)' });
+  var r = el.getBoundingClientRect();
+  floatText(r.left, r.top-6, '♥', 'plus');
+}
+
+/* ======================= 弹层 ======================= */
+function showModal(html){
+  document.getElementById('mbox').innerHTML = html;
+  document.getElementById('modal').classList.add('on');
+  if(MOTION) gsap.fromTo('#mbox', { y:18, scale:.96, opacity:0 }, { y:0, scale:1, opacity:1, duration:MT.base, ease:ME.out });
+}
+function closeModal(){ document.getElementById('modal').classList.remove('on'); }
+
+/* ======================= 彩蛋：键盘 ======================= */
+var KONAMI = ['ArrowUp','ArrowUp','ArrowDown','ArrowDown','ArrowLeft','ArrowRight','ArrowLeft','ArrowRight','b','a'];
+var kbuf = [];
+document.addEventListener('keydown', function(e){
+  kbuf.push(e.key.length===1 ? e.key.toLowerCase() : e.key);
+  if(kbuf.length > KONAMI.length) kbuf.shift();
+  if(kbuf.join(',') === KONAMI.join(',')){
+    kbuf = [];
+    if(!G || G.flags.konami) return;
+    G.flags.konami = true;
+    G.money += 100;
+    flash();
+    log('天上掉下一百文钱，砸在草垛上，滚了一地。没人看见。','e');
+    toast('不可说');
+    if(MOTION){
+      document.querySelectorAll('.pet').forEach(function(el, idx){
+        gsap.to(el, { y:'-=18', duration:.28, yoyo:true, repeat:5, ease:'power1.inOut', delay:idx*.08 });
+      });
+    }
+    save(); render();
+  }
+});
+
+/* ======================= 开局 ======================= */
+function intro(){
+  showModal('<h2>紫 府 仙 缘</h2>'+
+    '<p>你叫苏晚，二十八岁，在山区做地质灾害监测。那夜暴雨，山谷里的预警灯全红了。你把最后一批工友推上转移车，回头核对名单——少了一个守夜的人。你找到他时，山已经下来了。</p>'+
+    '<p>再睁眼，是一间四面漏风的茅屋。你十五岁，姓苏，名婉，住在武国平州竹岐县城外的柳溪村。</p>'+
+    '<p>母亲在里屋咳，两个弟妹缩在稻草里。父亲三年前被县里征去北边修堤，走时留下半块碎玉，说最迟三年就回。如今三年过了，没有信。</p>'+
+    '<p class="q">里正蒋三每十八旬来收一趟租，一块田八文，一文不能少。</p>'+
+    '<p>第一夜，你梦见一口井。井底是一方三丈见方的死土，灰雾沉沉，偶有一线紫电掠过。井壁上刻着三十圈刻度，一个字浮出来：</p>'+
+    '<p style="text-align:center;letter-spacing:6px;color:#5a4bb8;font-size:15px">三 十 年 为 期</p>'+
+    '<button onclick="startPlay()">下 田</button>');
+}
+function showFirstGuide(){
+  showModal('<h2>紫 府 · 初 醒</h2>'+
+    '<div class="vn" style="border:none;margin-bottom:8px">'+
+      '<p>第二日清早，你去屋后抱柴。墙根堆着半人高的枯草，草下压着一块青石板，板缝里透出一线凉气。</p>'+
+      '<p>你用锄头撬了半晌，石板才挪开一道缝。底下是一口旧井，井沿磨得发亮；井底没有水，只有一方三丈见方的死土，灰雾沉沉，与昨夜梦里分毫不差。</p>'+
+      '<p>你在井边站了很久。那些字没有声音，却一笔一笔往心里落。</p>'+
+    '</div>'+
+    '<div class="calc">'+
+      '<b>时</b>　一旬十日，一月三旬。田里的东西按旬长，人按旬老。<br>'+
+      '<b>力</b>　每旬 3 点余力，开荒 2 点、下种与收获各 1 点。余力用完，就过旬。<br>'+
+      '<b>土</b>　井底死土可以养。耗口粮与铜钱，一次养一寸；活土是突破的根基。<br>'+
+      '<b>催</b>　作物未熟时，可借紫府催长。不费余力，只折阳寿。<br>'+
+      '<b>境</b>　灵石、铜钱、活土备齐，可在「道途」突破。每破一境，每旬多 1 点余力。'+
+    '</div>'+
+    '<p class="q">壁上另有一行小字：借一旬之辰，偿三十旬之寿。</p>'+
+    '<p>往后拿不准该做什么，就点紫府的「要诀」。它会告诉你眼下缺什么。</p>'+
+    '<p>先去看田。三块荒地，一柄豁口的锄头，够你忙到入冬了。</p>'+
+    '<button onclick="closeModal()">记住这口井</button>');
+}
+function startPlay(){
+  closeModal();
+  log('你从茅屋里出来。院外三块荒地，一柄豁了口的锄头。','');
+  render();
+  showFirstGuide();
+}
+
+/* ======================= 启动 ======================= */
+(function boot(){
+  document.getElementById('btnBreak').onclick = doBreak;
+  document.getElementById('btnSoil').onclick = doSoil;
+  document.getElementById('well').addEventListener('click', puzzleWell);
+  if(!HAS_GSAP) document.body.style.backgroundColor = SEASONS[0].bg;
+
+  if(load()){ render(); if(G.logs.length===0) log('你回来了。',''); }
+  else {
+    newGame(); render();
+    if(location.hash==='#play') startPlay(); else intro();
+  }
+
+  if(MOTION){
+    gsap.to('#fog', { x:26, y:-12, duration:11, repeat:-1, yoyo:true, ease:'sine.inOut' });
+    setInterval(function(){ if(!document.hidden && Math.random()<0.35) boltFlash(); }, 3400);
+  }
+
+  var rt;
+  window.addEventListener('resize', function(){
+    clearTimeout(rt);
+    rt = setTimeout(function(){ mountPets(); }, 240);
+  });
+})();
+</script>
+</body>
+</html>
